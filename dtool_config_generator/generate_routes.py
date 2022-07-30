@@ -1,20 +1,33 @@
-from flask import abort
+from flask import render_template, redirect, url_for, current_app
+from flask_login import login_required, current_user
 from flask_smorest import Blueprint
 
-from dtool_config_generator import AuthenticationError
-import dtool_config_generator.utils
+# from .schemas import TestResponseSchema
 
-from .schemas import TestResponseSchema
-
-bp = Blueprint("config", __name__, url_prefix="/config")
+bp = Blueprint("generate", __name__, template_folder='templates', url_prefix="/generate")
 
 
-@bp.route("/generate/<username>", methods=["GET"])
-@bp.response(200, TestResponseSchema)
-@jwt_required()
-def generate(username):
+def stream_template(template_name, **context):
+    current_app.update_template_context(context)
+    t = current_app.jinja_env.get_template(template_name)
+    rv = t.stream(context)
+    rv.enable_buffering(5)
+    return rv
+
+
+@bp.route("/config", methods=["GET"])
+@login_required
+def config():
     """Generate dtool config for user."""
-    token_username = get_jwt_identity()
-
-    # return dtool_lookup_server.utils.get_user_info(username)
-    return token_username
+    user = {
+        'id': current_user.username,
+        'name': "Test User",
+        'email': "test@mail.com"
+    }
+    #content = render_template('dtool.json', user=user)
+    return  current_app.response_class(
+        stream_template('dtool.json', user=user),
+        mimetype='application/json',
+        headers={"Content-Disposition":
+                     "attachment;filename=dtool.json"}
+    )

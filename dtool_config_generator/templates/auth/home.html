@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Home{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <h1>Welcome: {{ current_user.data.cn }}</h1>
+  <h2>{{ current_user.dn }}</h2>
+{% endblock %}

@@ -25,7 +25,7 @@ setup(
         "root": '.',
         "relative_to": __file__,
         "write_to": os.path.join(
-            "dtool_lookup_gui", "version.py"),
+            "dtool_config_generator", "version.py"),
     },
     install_requires=[
         "flask",
@@ -33,6 +33,8 @@ setup(
         "flask-smorest",
         "flask-cors",
         "flask-jwt-extended[asymmetric_crypto]>=4.0",
+        "flask-login",
+        "flask-ldap3-login",
         "pyyaml",
     ],
     license="MIT"

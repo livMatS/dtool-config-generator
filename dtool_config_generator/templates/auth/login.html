@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Log In{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+    <h2>Errors</h2>
+    <ul class=errors>
+    {% for key, value in form.errors.items() %}
+      <li>{{key}}: {{ value }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <form method="POST">
+      <label>Username: {{ form.username() }}</label>
+      <label>Password: {{ form.password() }}</label>
+      {{ form.submit() }}
+      {{ form.hidden_tag() }}
+  </form>
+{% endblock %}

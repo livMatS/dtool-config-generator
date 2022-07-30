@@ -1,0 +1,24 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - dtool-config-generator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <h1>dtool-config-generator</h1>
+  <ul>
+    {% if not current_user or current_user.is_anonymous %}
+      <li><a href="{{ url_for('auth.login') }}">Log In</a>
+    {% else %}
+      <li><span>{{ current_user.data.cn }}</span>
+    <li><a href="{{ url_for('generate.config') }}">Generate</a>
+      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% endif %}
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>
