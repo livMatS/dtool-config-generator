@@ -37,5 +37,12 @@ setup(
         "flask-ldap3-login",
         "pyyaml",
     ],
+    setup_requires=['setuptools_scm'],
+    tests_require=[
+        "pytest",
+        "pytest-cov",
+        "pytest-docker[docker-compose-v1]",
+        "ldap3"
+    ],
     license="MIT"
 )

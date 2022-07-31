@@ -1,7 +1,9 @@
-production.cfg
+dtool_config_generator/version.py
 app.db
+production.cfg
 TODO.rst
 .coverage
+.eggs
 .idea
 
 *.swp
