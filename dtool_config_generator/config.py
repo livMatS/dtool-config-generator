@@ -2,27 +2,18 @@ import os
 
 import dtool_config_generator
 
-_HERE = os.path.abspath(os.path.dirname(__file__))
 
-
-def _get_file_content(key, default=""):
-    file_path = os.environ.get(key, "")
-    if os.path.isfile(file_path):
-        content = open(file_path).read()
-    else:
-        content = ""
-    return content
-
-
-class Config(object):
+class Config():
     SECRET_KEY = 'secret'
-    DEBUG = True
+    # DEBUG = True
+
+    DTOOL_CONFIG_TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates', 'dtool.json')
 
     # Setup LDAP Configuration Variables. Change these to your own settings.
     # All configuration directives can be found in the documentation.
 
     # Hostname of your LDAP Server
-    LDAP_HOST = 'ad.mydomain.com'
+    # LDAP_HOST = 'ad.mydomain0.com'
 
     # Base DN of your directory
     # LDAP_BASE_DN = 'dc=mydomain,dc=com'
@@ -62,8 +53,8 @@ class Config(object):
     }
 
     @classmethod
-    def to_dict(cls):
-        """Convert server configuration into dict."""
+    def to_lowercase_dict(cls):
+        """Convert server configuration into dict for export."""
         exclusions = [
             "JWT_PRIVATE_KEY",
         ]  # config keys to exclude
@@ -74,3 +65,11 @@ class Config(object):
                 d[k.lower()] = v
         return d
 
+    @classmethod
+    def to_dict(cls):
+        """Convert server configuration into dict."""
+        d = {}
+        for attribute in dir(cls):
+            if attribute.upper() == attribute and attribute[0] != '_':
+                d[attribute] = getattr(cls, attribute)
+        return d

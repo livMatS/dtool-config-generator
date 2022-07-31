@@ -39,6 +39,7 @@ except PackageNotFoundError:
 
 from dtool_config_generator.config import Config
 
+
 class ValidationError(ValueError):
     pass
 
@@ -82,16 +83,16 @@ def create_app(test_config=None):
 
     CORS(app)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
+    # load the instance config, if it exists
+    if  test_config is None:
         app.config.from_object(Config)
 
         # override with config file specified in env variable
         if "FLASK_CONFIG_FILE" in os.environ:
             app.config.from_envvar("FLASK_CONFIG_FILE")
-
     else:
         # load the test config if passed in
+        logger.debug(f"Inject test config %s" % test_config)
         app.config.from_mapping(test_config)
 
     ma.init_app(app)

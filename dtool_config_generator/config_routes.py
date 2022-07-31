@@ -36,4 +36,4 @@ def server_config():
     """Return the JSON-serialized server configuration."""
     # return Config.to_dict()
 
-    return to_dict(current_app.config)
+    return jsonify(to_dict(current_app.config))

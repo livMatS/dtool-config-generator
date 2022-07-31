@@ -5,6 +5,19 @@ import pytest
 
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 
+from dtool_config_generator.config import Config
+from dtool_config_generator import create_app
+
+
+class TestingConfig(Config):
+    """Extend default config by testing settings."""
+    TESTING = True
+    DEBUG = True
+    WTF_CSRF_ENABLED = False
+
+# ===============
+# docker services
+# ===============
 
 @pytest.fixture(scope="session")
 def ldap_config():
@@ -37,6 +50,41 @@ def ldap_service(docker_ip, docker_services, ldap_config):
     ldap_manager.init_config(ldap_config)
     # Wat until service responsive, heck if the credentials are correct
     docker_services.wait_until_responsive(
-        timeout=5.0, pause=1.0, check=lambda: ldap_manager.authenticate('testuser', 'test_password').status == AuthenticationResponseStatus.success
+        timeout=5.0, pause=1.0, check=lambda: ldap_manager.authenticate(
+            'testuser', 'test_password').status == AuthenticationResponseStatus.success
     )
     return ldap_config
+
+
+# =========
+# flask app
+# =========
+
+
+@pytest.fixture(scope="session")
+def flask_config_file(pytestconfig):
+    return os.path.join(str(pytestconfig.rootdir), "tests", "etc", "flask_config.cfg")
+
+
+@pytest.fixture(scope="session")
+def test_config(ldap_config, pytestconfig):
+    config = TestingConfig().to_dict()
+    config.update(ldap_config)
+    config["DTOOL_CONFIG_TEMPLATE"] = os.path.join(
+        str(pytestconfig.rootdir), "tests", "templates", "dtool.json")
+    return config
+
+
+@pytest.fixture()
+def app(ldap_service, test_config):
+    return create_app(test_config)
+
+
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+
+@pytest.fixture()
+def runner(app):
+    return app.test_cli_runner()
