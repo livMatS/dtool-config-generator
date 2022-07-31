@@ -1,0 +1,2 @@
+LDAP_USERS=testuser
+LDAP_PASSWORDS=test_password
