@@ -72,6 +72,8 @@ def test_config(ldap_config, pytestconfig):
     config.update(ldap_config)
     config["DTOOL_CONFIG_TEMPLATE"] = os.path.join(
         str(pytestconfig.rootdir), "tests", "templates", "dtool.json")
+    config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+
     return config
 
 

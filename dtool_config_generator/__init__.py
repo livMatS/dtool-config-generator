@@ -2,12 +2,15 @@ import click
 import logging
 import os
 
-from flask import Flask, request
+from flask import Flask, flash, redirect, request, url_for
 from flask_cors import CORS
-from flask_marshmallow import Marshmallow
-from flask_smorest import Api
 from flask_ldap3_login import LDAP3LoginManager
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
+from flask_smorest import Api
+from flask_sqlalchemy import SQLAlchemy
+
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -60,21 +63,7 @@ class UnknownURIError(KeyError):
     pass
 
 
-# Declare an Object Model for the user, and make it comply with the
-# flask-login UserMixin mixin.
-class User(UserMixin):
-    def __init__(self, dn, username, data):
-        self.dn = dn
-        self.username = username
-        self.data = data
-
-    def __repr__(self):
-        return self.dn
-
-    def get_id(self):
-        return self.dn
-
-
+sql_db = SQLAlchemy()
 ma = Marshmallow()
 
 
@@ -95,6 +84,8 @@ def create_app(test_config=None):
         logger.debug(f"Inject test config %s" % test_config)
         app.config.from_mapping(test_config)
 
+    sql_db.init_app(app)
+    Migrate(app, sql_db)
     ma.init_app(app)
 
     api = Api(app)
@@ -106,27 +97,31 @@ def create_app(test_config=None):
 
     # Create a dictionary to store the users in when they authenticate
     # This example stores users in memory.
-    users = {}
 
     from dtool_config_generator import (
         config_routes,
         generate_routes,
         auth_routes,
         main_routes)
+    from dtool_config_generator.models import User
 
-    #api.register_blueprint(main_routes.bp)
     api.register_blueprint(generate_routes.bp)
     api.register_blueprint(auth_routes.bp)
     api.register_blueprint(config_routes.bp)
 
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        """Redirect unauthorized users to Login page."""
+        flash('You must be logged in to view that page.')
+        return redirect(url_for('auth.login'))
+
+    # https://github.com/nickw444/flask-ldap3-login/issues/26
     # Declare a User Loader for Flask-Login.
     # Simply returns the User if it exists in our 'database', otherwise
     # returns None.
     @login_manager.user_loader
-    def load_user(id):
-        if id in users:
-            return users[id]
-        return None
+    def load_user(user_id):
+        return User.query.filter_by(id=user_id).first()
 
     # Declare The User Saver for Flask-Ldap3-Login
     # This method is called whenever a LDAPLoginForm() successfully validates.
@@ -134,9 +129,24 @@ def create_app(test_config=None):
     # login controller.
     @ldap_manager.save_user
     def save_user(dn, username, data, memberships):
-        user = User(dn, username, data)
-        users[dn] = user
+        uidNumber = data.get("uidNumber")
+        user_id = int(uidNumber[0] if isinstance(uidNumber, list) else uidNumber)
+        user = User.query.filter_by(id=user_id).first()
+
+        if not user:
+            user = User(
+                id=int(user_id),
+                dn=dn,
+                username=username
+            )
+            sql_db.session.add(user)
+            sql_db.session.commit()
+
         return user
+
+    @app.before_first_request
+    def create_tables():
+        sql_db.create_all()
 
     @app.before_request
     def log_request():

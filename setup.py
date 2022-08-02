@@ -29,13 +29,16 @@ setup(
     },
     install_requires=[
         "flask",
-        "flask-marshmallow",
-        "flask-smorest",
         "flask-cors",
         "flask-jwt-extended[asymmetric_crypto]>=4.0",
         "flask-login",
         "flask-ldap3-login",
-        "pyyaml",
+        "flask-marshmallow",
+        "flask-migrate",
+        "flask-smorest",
+        "flask-sqlalchemy",
+        "marshmallow-sqlalchemy",
+        "pyyaml"
     ],
     setup_requires=['setuptools_scm'],
     tests_require=[

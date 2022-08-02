@@ -3,6 +3,10 @@ import os
 import dtool_config_generator
 
 
+_HERE = os.path.abspath(os.path.dirname(__file__))
+
+
+
 class Config():
     SECRET_KEY = 'secret'
     # DEBUG = True
@@ -51,6 +55,12 @@ class Config():
     API_SPEC_OPTIONS = {
         "x-internal-id": "2"
     }
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "SQLALCHEMY_DATABASE_URI",
+        "sqlite:///{}".format(os.path.join(_HERE, "..", "app.db")),
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @classmethod
     def to_lowercase_dict(cls):
