@@ -5,7 +5,7 @@ from flask_ldap3_login.forms import LDAPLoginForm
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_smorest import Blueprint
 
-from dtool_config_generator import sql_db as db
+from dtool_config_generator import db
 
 
 bp = Blueprint("auth", __name__, template_folder='templates', url_prefix='/auth')

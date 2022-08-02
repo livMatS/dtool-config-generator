@@ -29,6 +29,7 @@ setup(
     },
     install_requires=[
         "flask",
+        "flask-admin",
         "flask-cors",
         "flask-jwt-extended[asymmetric_crypto]>=4.0",
         "flask-login",

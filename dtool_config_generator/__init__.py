@@ -3,14 +3,15 @@ import logging
 import os
 
 from flask import Flask, flash, redirect, request, url_for
+from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 from flask_ldap3_login import LDAP3LoginManager
 from flask_login import LoginManager
-from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_smorest import Api
-from flask_sqlalchemy import SQLAlchemy
 
+from dtool_config_generator.extensions import db, ma, admin
+from dtool_config_generator.models import User
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -63,10 +64,6 @@ class UnknownURIError(KeyError):
     pass
 
 
-sql_db = SQLAlchemy()
-ma = Marshmallow()
-
-
 def create_app(test_config=None):
     app = Flask(__name__)
 
@@ -84,9 +81,12 @@ def create_app(test_config=None):
         logger.debug(f"Inject test config %s" % test_config)
         app.config.from_mapping(test_config)
 
-    sql_db.init_app(app)
-    Migrate(app, sql_db)
+    db.init_app(app)
+    Migrate(app, db)
     ma.init_app(app)
+    admin.init_app(app)
+
+    admin.add_view(ModelView(User, db.session))
 
     api = Api(app)
 
@@ -95,15 +95,11 @@ def create_app(test_config=None):
     # Initialise the ldap manager using the settings read into the flask app.
     ldap_manager = LDAP3LoginManager(app)
 
-    # Create a dictionary to store the users in when they authenticate
-    # This example stores users in memory.
-
     from dtool_config_generator import (
         config_routes,
         generate_routes,
         auth_routes,
         main_routes)
-    from dtool_config_generator.models import User
 
     api.register_blueprint(generate_routes.bp)
     api.register_blueprint(auth_routes.bp)
@@ -139,14 +135,14 @@ def create_app(test_config=None):
                 dn=dn,
                 username=username
             )
-            sql_db.session.add(user)
-            sql_db.session.commit()
+            db.session.add(user)
+            db.session.commit()
 
         return user
 
     @app.before_first_request
     def create_tables():
-        sql_db.create_all()
+        db.create_all()
 
     @app.before_request
     def log_request():

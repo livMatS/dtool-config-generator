@@ -13,6 +13,10 @@ class Config():
 
     DTOOL_CONFIG_TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates', 'dtool.json')
 
+    # flask-admin default options
+    FLASK_ADMIN_SWATCH = 'cerulean'
+
+    # ldap default options
     # Setup LDAP Configuration Variables. Change these to your own settings.
     # All configuration directives can be found in the documentation.
 
@@ -42,6 +46,7 @@ class Config():
 
     JSONIFY_PRETTYPRINT_REGULAR = True
 
+    # swagger default options
     API_TITLE = "dtool-config-generator API"
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.0.2"

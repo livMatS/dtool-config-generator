@@ -1,13 +1,14 @@
 from dtool_config_generator import ma
-from dtool_config_generator import sql_db as db
+from dtool_config_generator import db
 
 from flask_login import UserMixin
 
 
 # Declare an Object Model for the user, and make it comply with the
 # flask-login UserMixin mixin.
-class User(UserMixin,db.Model):
+class User(UserMixin, db.Model):
     """User account model."""
+
     id = db.Column(
         db.Integer,
         primary_key=True
@@ -16,17 +17,26 @@ class User(UserMixin,db.Model):
     username = db.Column(
         db.String(256),
         index=True,
-        unique=True)
+        unique=True
+    )
 
     dn = db.Column(
         db.String(256),
-        unique=True)
+        unique=True
+    )
+
+    activated = db.Column(
+        db.Boolean(),
+        nullable=False,
+        default=False
+    )
 
     # activated = db.Column(db.Boolean(), nullable=False, default=False)
     is_admin = db.Column(
         db.Boolean(),
         nullable=False,
-        default=False)
+        default=False
+    )
 
     name = db.Column(
         db.String(256),
@@ -37,3 +47,7 @@ class User(UserMixin,db.Model):
         db.String(256),
         unique=True
     )
+
+    @property
+    def is_active(self):
+        return self.activated
