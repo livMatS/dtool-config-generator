@@ -3,6 +3,7 @@ import logging
 import os
 
 from flask import Flask, flash, redirect, request, url_for
+from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 from flask_ldap3_login import LDAP3LoginManager
@@ -10,8 +11,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_smorest import Api
 
-from dtool_config_generator.extensions import db, ma, admin
-from dtool_config_generator.models import User
+from dtool_config_generator.extensions import db, ma
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -70,7 +70,7 @@ def create_app(test_config=None):
     CORS(app)
 
     # load the instance config, if it exists
-    if  test_config is None:
+    if test_config is None:
         app.config.from_object(Config)
 
         # override with config file specified in env variable
@@ -84,8 +84,11 @@ def create_app(test_config=None):
     db.init_app(app)
     Migrate(app, db)
     ma.init_app(app)
-    admin.init_app(app)
 
+    # admin initialized here due to https://github.com/flask-admin/flask-admin/issues/910
+    admin = Admin(app, name=__name__, template_mode='bootstrap3')
+
+    from dtool_config_generator.models import User
     admin.add_view(ModelView(User, db.session))
 
     api = Api(app)
@@ -96,14 +99,13 @@ def create_app(test_config=None):
     ldap_manager = LDAP3LoginManager(app)
 
     from dtool_config_generator import (
-        config_routes,
-        generate_routes,
         auth_routes,
-        main_routes)
+        config_routes,
+        generate_routes)
 
-    api.register_blueprint(generate_routes.bp)
     api.register_blueprint(auth_routes.bp)
     api.register_blueprint(config_routes.bp)
+    api.register_blueprint(generate_routes.bp)
 
     @login_manager.unauthorized_handler
     def unauthorized():

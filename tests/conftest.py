@@ -77,7 +77,7 @@ def test_config(ldap_config, pytestconfig):
     return config
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def app(ldap_service, test_config):
     return create_app(test_config)
 
