@@ -28,6 +28,12 @@ class User(UserMixin, db.Model):
     activated = db.Column(
         db.Boolean(),
         nullable=False,
+        default=True
+    )
+
+    confirmed = db.Column(
+        db.Boolean(),
+        nullable=False,
         default=False
     )
 
@@ -45,9 +51,18 @@ class User(UserMixin, db.Model):
 
     email = db.Column(
         db.String(256),
-        unique=True
+        unique=False
+    )
+
+    orcid = db.Column(
+        db.String(256),
+        unique=False
     )
 
     @property
     def is_active(self):
         return self.activated
+
+    @property
+    def is_confirmed(self):
+        return self.confirmed

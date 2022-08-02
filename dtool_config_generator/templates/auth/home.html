@@ -6,7 +6,7 @@
 
 {% block content %}
   <h2>Welcome {{ current_user.username }}</h2>
-  {% if not current_user.is_active %}
+  {% if not current_user.is_confirmed %}
   <div>Your account is waiting for approval.</div>
   {% endif %}
 {% endblock %}

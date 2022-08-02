@@ -6,15 +6,31 @@ import dtool_config_generator
 _HERE = os.path.abspath(os.path.dirname(__file__))
 
 
-
 class Config():
     SECRET_KEY = 'secret'
     # DEBUG = True
 
     DTOOL_CONFIG_TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates', 'dtool.json')
 
+    USER_CONFIRMATION_EMAIL_SENDER = 'admin@dtool.config.generator'
+    USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
+
     # flask-admin default options
     FLASK_ADMIN_SWATCH = 'cerulean'
+
+    # mail server default options
+    MAIL_SERVER = 'localhost'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = False
+    # MAIL_DEBUG = 'app.debug'
+    MAIL_USERNAME = 'admin@dtool.config.generator'
+    MAIL_PASSWORD = 'password'
+    MAIL_DEFAULT_SENDER = 'admin@dtool.config.generator'
+    # MAIL_MAX_EMAILS : default None
+    MAIL_SUPPRESS_SEND = False # : default app.testing
+    # MAIL_ASCII_ATTACHMENTS : default False
+
 
     # ldap default options
     # Setup LDAP Configuration Variables. Change these to your own settings.

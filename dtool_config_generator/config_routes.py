@@ -1,9 +1,12 @@
 import json
 
 from flask import current_app, jsonify
+from flask_login import login_required
 from flask_smorest import Blueprint
 
 import dtool_config_generator
+
+from .utils import admin_required
 
 bp = Blueprint("config", __name__, url_prefix="/config")
 
@@ -32,6 +35,8 @@ def to_dict(obj):
 
 
 @bp.route("/info", methods=["GET"])
+@login_required
+@admin_required
 def server_config():
     """Return the JSON-serialized server configuration."""
     # return Config.to_dict()

@@ -6,7 +6,7 @@ from flask_smorest import Blueprint
 
 from jinja2 import Environment, FileSystemLoader
 
-# from .schemas import TestResponseSchema
+from .utils import confirmation_required
 
 bp = Blueprint("generate", __name__, template_folder='templates', url_prefix="/generate")
 
@@ -29,6 +29,7 @@ def stream_config_template(**context):
 
 @bp.route("/config", methods=["GET"])
 @login_required
+@confirmation_required
 def config():
     """Generate dtool config for user."""
     user = {

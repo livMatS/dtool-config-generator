@@ -11,7 +11,8 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_smorest import Api
 
-from dtool_config_generator.extensions import db, ma
+from dtool_config_generator.extensions import db, ma, mail
+from dtool_config_generator.security import require_confirmation
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -81,6 +82,7 @@ def create_app(test_config=None):
         logger.debug(f"Inject test config %s" % test_config)
         app.config.from_mapping(test_config)
 
+    mail.init_app(app)
     db.init_app(app)
     Migrate(app, db)
     ma.init_app(app)
@@ -101,11 +103,13 @@ def create_app(test_config=None):
     from dtool_config_generator import (
         auth_routes,
         config_routes,
-        generate_routes)
+        generate_routes,
+        main_routes)
 
     api.register_blueprint(auth_routes.bp)
     api.register_blueprint(config_routes.bp)
     api.register_blueprint(generate_routes.bp)
+    api.register_blueprint(main_routes.bp)
 
     @login_manager.unauthorized_handler
     def unauthorized():
@@ -127,18 +131,25 @@ def create_app(test_config=None):
     # login controller.
     @ldap_manager.save_user
     def save_user(dn, username, data, memberships):
-        uidNumber = data.get("uidNumber")
-        user_id = int(uidNumber[0] if isinstance(uidNumber, list) else uidNumber)
+        logger.debug("Entered ldap_manager.save_user for %s", username)
+        uid_number = data.get("uidNumber")
+        user_id = int(uid_number[0] if isinstance(uid_number, list) else uid_number)
         user = User.query.filter_by(id=user_id).first()
 
         if not user:
+            logger.debug("User %s not yet recorded.", username)
+            # the user has never logged in before and is created
             user = User(
                 id=int(user_id),
                 dn=dn,
                 username=username
             )
+
             db.session.add(user)
             db.session.commit()
+
+            # an activation email is sent to the admin
+            require_confirmation(user)
 
         return user
 

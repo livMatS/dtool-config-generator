@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Profile{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+    <h2>Errors</h2>
+    <ul class=errors>
+    {% for key, value in form.errors.items() %}
+      <li>{{key}}: {{ value }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <form method="POST">
+      <label>{{ form.name.label }}: {{ form.name() }}</label>
+      <label>{{ form.email.label }}: {{ form.email() }}</label>
+      <label>{{ form.orcid.label }}: {{ form.orcid() }}</label>
+      {{ form.hidden_tag() }}
+       <input type="submit" value="Apply">
+  </form>
+{% endblock %}

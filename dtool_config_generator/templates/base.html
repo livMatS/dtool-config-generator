@@ -7,7 +7,7 @@
     {% if not current_user or current_user.is_anonymous %}
       <li><a href="{{ url_for('auth.login') }}">Log In</a>
     {% else %}
-      <li><span>{{ current_user.username }}</span>
+    <li><a href="{{ url_for('auth.profile') }}">{{ current_user.username }}</a>
     <li><a href="{{ url_for('generate.config') }}">Generate</a>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% endif %}
