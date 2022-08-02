@@ -34,10 +34,12 @@ setup(
         "flask-jwt-extended[asymmetric_crypto]>=4.0",
         "flask-login",
         "flask-ldap3-login",
+        "flask-mail",
         "flask-marshmallow",
         "flask-migrate",
         "flask-smorest",
         "flask-sqlalchemy",
+        "itsdangerous",
         "marshmallow-sqlalchemy",
         "pyyaml"
     ],
