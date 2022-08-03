@@ -185,7 +185,6 @@ def get_user_by_id(id):
         return None
 
 
-
 def create_user(unique_name, full_name, member_of=None, disable=False):
     """Create new user.
 
@@ -244,7 +243,7 @@ def create_user(unique_name, full_name, member_of=None, disable=False):
         return None
 
 
-def delete_user_by_id(id):
+def delete_user(id):
     """Get user by id.
 
     Parameters
@@ -267,7 +266,7 @@ def delete_user_by_id(id):
     return  response.status_code == 204
 
 
-def list_s3_access_keys_by_user_id(user_id):
+def list_s3_access_keys(user_id):
     """List s3 access keys for user id.
 
     Parameters
@@ -309,7 +308,7 @@ def list_s3_access_keys_by_user_id(user_id):
         return None
 
 
-def _create_s3_access_key_by_user_id(user_id, expires):
+def _create_s3_access_key(user_id, expires):
     """Create s3 access key for user id.
 
     Parameters
@@ -357,7 +356,7 @@ def _create_s3_access_key_by_user_id(user_id, expires):
         return None
 
 
-def create_s3_access_key_by_user_id(user_id, timedelta):
+def create_s3_access_key(user_id, timedelta):
     """
     Create s3 access key for user id.
 
@@ -373,10 +372,10 @@ def create_s3_access_key_by_user_id(user_id, timedelta):
     """
 
     expiry_date = datetime.datetime.now() + timedelta
-    return _create_s3_access_key_by_user_id(user_id, expiry_date.isoformat())
+    return _create_s3_access_key(user_id, expiry_date.isoformat())
 
 
-def delete_s3_access_key_by_user_id_and_access_key(user_id, access_key):
+def delete_s3_access_key(user_id, access_key):
     """Delete s3 access key by user id and access key
 
     Parameters

@@ -4,6 +4,12 @@ from flask_login import current_user
 from functools import wraps
 
 
+from dtool_config_generator.models import User
+from dtool_config_generator.comm.storagegrid import (
+    get_user_by_short_name, create_user)
+
+
+
 # inspired by https://github.com/flask-admin/flask-admin/blob/master/examples/auth-flask-login/app.py
 # Create customized index view class that handles login & registration
 class DtoolConfigGeneratorAdminIndexView(AdminIndexView):

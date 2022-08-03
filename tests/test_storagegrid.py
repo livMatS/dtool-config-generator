@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 from dtool_config_generator.comm.storagegrid import (
     authorize,
     create_user,
-    create_s3_access_key_by_user_id,
-    delete_s3_access_key_by_user_id_and_access_key,
-    delete_user_by_id,
+    create_s3_access_key,
+    delete_s3_access_key,
+    delete_user,
     get_user_by_short_name,
     get_user_by_id,
     list_users,
-    list_s3_access_keys_by_user_id)
+    list_s3_access_keys)
 
 
 def test_storagegrid_authorize(production_app):
@@ -63,7 +63,7 @@ def test_storagegrid_list_s3_access_keys_by_user_id(production_app):
         logger.debug("User: %s", json.dumps(ret_by_short_name, indent=4))
         assert ret_by_short_name is not None
 
-        ret_by_id = list_s3_access_keys_by_user_id(ret_by_short_name['id'])
+        ret_by_id = list_s3_access_keys(ret_by_short_name['id'])
         logger.debug("S3 access keys: %s", json.dumps(ret_by_id, indent=4))
         assert ret_by_id is not None
 
@@ -77,7 +77,7 @@ def test_storagegrid_create_s3_access_key_by_user_id(production_app):
 
         import datetime
         timedelta = datetime.timedelta(days=1)
-        ret_by_id = create_s3_access_key_by_user_id(ret_by_short_name['id'], timedelta)
+        ret_by_id = create_s3_access_key(ret_by_short_name['id'], timedelta)
         logger.debug("S3 access keys: %s", json.dumps(ret_by_id, indent=4))
         assert ret_by_id is not None
 
@@ -88,12 +88,12 @@ def test_storagegrid_delete_s3_access_key(production_app):
         logger.debug("User: %s", json.dumps(user, indent=4))
         assert user is not None
 
-        s3_acces_keys = list_s3_access_keys_by_user_id(user['id'])
+        s3_acces_keys = list_s3_access_keys(user['id'])
         logger.debug("S3 access keys: %s", json.dumps(s3_acces_keys, indent=4))
         assert s3_acces_keys is not None
 
         for s3_access_key in s3_acces_keys:
-            assert delete_s3_access_key_by_user_id_and_access_key(user['id'], s3_access_key['id'])
+            assert delete_s3_access_key(user['id'], s3_access_key['id'])
 
 
 def test_storagegrid_delete_user(production_app):
@@ -102,4 +102,4 @@ def test_storagegrid_delete_user(production_app):
         logger.debug("User: %s", json.dumps(user, indent=4))
         assert user is not None
 
-        assert delete_user_by_id(user['id'])
+        assert delete_user(user['id'])

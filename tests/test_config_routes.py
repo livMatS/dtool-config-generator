@@ -41,6 +41,8 @@ def test_config_route_failure(client):
         assert response.status_code == 302
 
         confirm(current_user)
+        current_user.is_admin = False  # invalidate admin rights
+        db.session.commit()
 
         # user is not admin
 
