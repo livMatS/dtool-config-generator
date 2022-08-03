@@ -76,6 +76,10 @@ def list_users(limit=25, **kwargs):
         if set, the marker element is also returned
     order: string
         'asc' or 'desc'
+
+    Returns
+    -------
+    list of dict or None
     """
     host = current_app.config.get("STORAGEGRID_HOST")
 
@@ -107,7 +111,7 @@ def get_user_by_short_name(short_name):
 
     Returns
     -------
-    dict
+    dict or None
     """
 
     host = current_app.config.get("STORAGEGRID_HOST")
@@ -202,7 +206,7 @@ def create_user(unique_name, full_name, member_of=None, disable=False):
 
     Returns
     -------
-    dict
+    dict or None
     """
 
     host = current_app.config.get("STORAGEGRID_HOST")

@@ -1,8 +1,6 @@
 import json
 import logging
 
-logger = logging.getLogger(__name__)
-
 from dtool_config_generator.comm.storagegrid import (
     authorize,
     create_user,
@@ -13,6 +11,9 @@ from dtool_config_generator.comm.storagegrid import (
     get_user_by_id,
     list_users,
     list_s3_access_keys)
+
+
+logger = logging.getLogger(__name__)
 
 
 def test_storagegrid_authorize(production_app):

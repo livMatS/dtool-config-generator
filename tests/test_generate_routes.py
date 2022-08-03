@@ -62,7 +62,7 @@ def test_generate_config_success(client):
         db.session.commit()
 
         # generate
-        response = client.get("/generate/config")
+        response = client.post("/generate/config")
         assert response.status_code == 200
         assert response.mimetype == 'application/json'
         assert response.json == DTOOL_CONFIG

@@ -8,7 +8,6 @@ from dtool_config_generator import db
 
 from .extensions import mail
 
-# ts = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
 logger = logging.getLogger(__name__)
 
 
@@ -42,7 +41,7 @@ def require_confirmation(user):
 
 
 def confirm(user):
-    """Confirm a new user."""
+    """Confirm a new user. Usually, the admin confirms."""
     user.confirmed = True
     db.session.add(user)
     db.session.commit()
