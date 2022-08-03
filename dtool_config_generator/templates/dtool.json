@@ -1,10 +1,10 @@
 {
   "DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL": "https://livmats-data.vm.uni-freiburg.de:4443/token",
   "DTOOL_LOOKUP_SERVER_URL": "https://livmats-data.vm.uni-freiburg.de:4443/lookup",
-  "DTOOL_LOOKUP_SERVER_USERNAME": "{{ user.id }}",
+  "DTOOL_LOOKUP_SERVER_USERNAME": "{{ user.username }}",
   "DTOOL_LOOKUP_SERVER_VERIFY_SSL": "true",
   "DTOOL_S3_ACCESS_KEY_ID_test-bucket": "testuser_access_key",
-  "DTOOL_S3_DATASET_PREFIX": "u/{{ user.id }}/",
+  "DTOOL_S3_DATASET_PREFIX": "u/{{ user.username }}/",
   "DTOOL_S3_ENDPOINT_test-bucket": "http://livmats-data.vm.uni-freiburg.de:9000",
   "DTOOL_S3_SECRET_ACCESS_KEY_test-bucket": "testuser_secret_key",
   "DTOOL_SMB_DOMAIN_test-share": "WORKGROUP",

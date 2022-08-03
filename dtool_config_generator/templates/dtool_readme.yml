@@ -1,0 +1,12 @@
+project: Project name
+description: Short description
+owners:
+  - name: {{ user.name }}
+    email: {{ user.email }}
+    username: {{ user.username }}
+    orcid: {{ user.orcid }}
+funders:
+  - organization: Deutsche Forschungsgemeinschaft (DFG)
+    program: Clusters of Excellence
+    code: EXC 2193
+creation_date: '{date}'

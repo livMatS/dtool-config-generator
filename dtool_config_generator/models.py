@@ -1,4 +1,3 @@
-from dtool_config_generator import ma
 from dtool_config_generator import db
 
 from flask_login import UserMixin
