@@ -15,6 +15,16 @@ class Config():
     USER_CONFIRMATION_EMAIL_SENDER = 'admin@dtool.config.generator'
     USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
 
+    # storagegrid s3 default options
+    STORAGEGRID_HOST = 'localhost'
+    STORAGEGRID_ACCOUNT_ID = '123456789'
+    STORAGEGRID_USERNAME = 'admin'
+    STORAGEGRID_PASSWORD = 'password'
+
+    STORAGEGRID_DEFAULT_GROUP_UUID = None  # i.e. "00000000-0000-0000-0000-000000000000"
+
+    STORAGEGRID_DEFAULT_S3_ACCESS_KEY_VALIDITY_PERIOD = 1
+
     # flask-admin default options
     FLASK_ADMIN_SWATCH = 'cerulean'
 
@@ -31,34 +41,40 @@ class Config():
     MAIL_SUPPRESS_SEND = False # : default app.testing
     # MAIL_ASCII_ATTACHMENTS : default False
 
-
     # ldap default options
     # Setup LDAP Configuration Variables. Change these to your own settings.
     # All configuration directives can be found in the documentation.
 
     # Hostname of your LDAP Server
-    # LDAP_HOST = 'ad.mydomain0.com'
+    LDAP_HOST = "ldap://localhost"
+    LDAP_PORT = 1389
 
     # Base DN of your directory
-    # LDAP_BASE_DN = 'dc=mydomain,dc=com'
+    LDAP_BASE_DN = "dc=example,dc=org"
+
+    LDAP_USE_SSL = False
 
     # Users DN to be prepended to the Base DN
-    # LDAP_USER_DN = 'ou=users'
+    LDAP_USER_DN = "ou=users"
 
     # Groups DN to be prepended to the Base DN
     # LDAP_GROUP_DN = 'ou=groups'
 
     # The RDN attribute for your user schema on LDAP
-    # LDAP_USER_RDN_ATTR = 'cn'
+    LDAP_USER_RDN_ATTR = "cn"
 
     # The Attribute you want users to authenticate to LDAP with.
-    # LDAP_USER_LOGIN_ATTR = 'mail'
+    LDAP_USER_LOGIN_ATTR = "uid"
 
     # The Username to bind to LDAP with
     # LDAP_BIND_USER_DN = None
 
     # The Password to bind to LDAP with
     # LDAP_BIND_USER_PASSWORD = None
+
+    LDAP_USER_OBJECT_FILTER = "(objectclass=*)"
+    LDAP_SEARCH_FOR_GROUPS = False
+    LDAP_USER_SEARCH_SCOPE = "SUBTREE"
 
     JSONIFY_PRETTYPRINT_REGULAR = True
 

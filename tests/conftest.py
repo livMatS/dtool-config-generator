@@ -67,6 +67,11 @@ def flask_config_file(pytestconfig):
 
 
 @pytest.fixture(scope="session")
+def production_flask_config_file(pytestconfig):
+    return os.path.join(str(pytestconfig.rootdir), "production.cfg")
+
+
+@pytest.fixture(scope="session")
 def test_config(ldap_config, pytestconfig):
     config = TestingConfig().to_dict()
     config.update(ldap_config)
@@ -90,3 +95,20 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
+
+
+@pytest.fixture(scope="function")
+def production_app(test_config, production_flask_config_file):
+    return create_app(
+        test_config=test_config,
+        test_config_file=production_flask_config_file)
+
+
+@pytest.fixture()
+def production_client(production_app):
+    return production_app.test_client()
+
+
+@pytest.fixture()
+def production_runner(production_app):
+    return production_app.test_cli_runner()

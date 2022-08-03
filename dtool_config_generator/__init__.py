@@ -65,7 +65,7 @@ class UnknownURIError(KeyError):
     pass
 
 
-def create_app(test_config=None):
+def create_app(test_config=None, test_config_file=None):
     app = Flask(__name__)
 
     CORS(app)
@@ -74,13 +74,19 @@ def create_app(test_config=None):
     if test_config is None:
         app.config.from_object(Config)
 
+
         # override with config file specified in env variable
         if "FLASK_CONFIG_FILE" in os.environ:
             app.config.from_envvar("FLASK_CONFIG_FILE")
     else:
         # load the test config if passed in
-        logger.debug(f"Inject test config %s" % test_config)
+        logger.debug(f"Inject test config %s", test_config)
         app.config.from_mapping(test_config)
+
+        # override with config file specified in function call
+        logger.debug(f"Override with config file %s", test_config_file)
+        if test_config_file is not None:
+            app.config.from_pyfile(test_config_file)
 
     mail.init_app(app)
     db.init_app(app)
