@@ -6,7 +6,7 @@ owners:
     username: {{ user.username }}
     orcid: {{ user.orcid }}
 funders:
-  - organization: Deutsche Forschungsgemeinschaft (DFG)
-    program: Clusters of Excellence
-    code: EXC 2193
+  - organization: Your funding organization
+    program: Your program
+    code: Program code
 creation_date: '{date}'

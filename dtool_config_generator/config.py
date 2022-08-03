@@ -11,6 +11,7 @@ class Config():
     # DEBUG = True
 
     DTOOL_CONFIG_TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates', 'dtool.json')
+    DTOOL_README_TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates', 'dtool_readme.yml')
 
     USER_CONFIRMATION_EMAIL_SENDER = 'admin@dtool.config.generator'
     USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
@@ -27,6 +28,8 @@ class Config():
     STORAGEGRID_DEFAULT_GROUP_UUID = None  # i.e. "00000000-0000-0000-0000-000000000000"
 
     STORAGEGRID_DEFAULT_S3_ACCESS_KEY_VALIDITY_PERIOD = 86400  # a day in seconds
+
+    STORAGEGRID_S3_CREDENTIALS_EMBEDDED_IN_CONFIG = False
 
     # flask-admin default options
     FLASK_ADMIN_SWATCH = 'cerulean'

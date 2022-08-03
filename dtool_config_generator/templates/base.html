@@ -8,8 +8,9 @@
       <li><a href="{{ url_for('auth.login') }}">Log In</a>
     {% else %}
     <li><a href="{{ url_for('auth.profile') }}">{{ current_user.username }}</a>
-    <li><a href="{{ url_for('generate.config') }}">Generate</a>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+    <li><a href="{{ url_for('generate.config') }}">Generate config</a>
+    <li><a href="{{ url_for('generate.readme') }}">Generate readme template</a>
+    <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% endif %}
   </ul>
 </nav>

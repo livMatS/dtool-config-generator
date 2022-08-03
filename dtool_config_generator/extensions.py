@@ -5,7 +5,10 @@ from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
+# from dtool_config_generator.utils import TemplateContextBuilder
 
 db = SQLAlchemy()
 ma = Marshmallow()
 mail = Mail()
+
+# dtool_config_template_context_builder = TemplateContextBuilder()

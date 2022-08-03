@@ -1,6 +1,7 @@
 dtool_config_generator/version.py
 app.db
 production.cfg
+production/*
 TODO.rst
 .coverage
 .eggs

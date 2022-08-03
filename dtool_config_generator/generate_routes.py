@@ -8,8 +8,8 @@ from flask_smorest import Blueprint
 
 from jinja2 import Environment, FileSystemLoader
 
-from .forms import ConfirmationForm
-from .utils import confirmation_required
+from dtool_config_generator.forms import ConfirmationForm
+from dtool_config_generator.utils import confirmation_required
 
 
 logger = logging.getLogger(__name__)
@@ -59,8 +59,9 @@ def stream_readme_template(**context):
 def generate_config():
     """Streams back filled-out config template."""
     logger.debug("Generate config for %s", current_user.username)
+    extended_context = current_app.template_context_builder.run()
     return current_app.response_class(
-        stream_config_template(user=current_user),
+        stream_config_template(user=current_user, **extended_context),
         mimetype='application/json',
         headers={"Content-Disposition":
                      "attachment;filename=dtool.json"}

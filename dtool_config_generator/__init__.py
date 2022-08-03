@@ -13,7 +13,9 @@ from flask_smorest import Api
 
 from dtool_config_generator.extensions import db, ma, mail
 from dtool_config_generator.security import require_confirmation
-from dtool_config_generator.utils import DtoolConfigGeneratorAdminIndexView
+from dtool_config_generator.utils import (
+    TemplateContextBuilder,
+    DtoolConfigGeneratorAdminIndexView)
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -109,6 +111,8 @@ def create_app(test_config=None, test_config_file=None):
     # Initialise the ldap manager using the settings read into the flask app.
     ldap_manager = LDAP3LoginManager(app)
 
+    template_context_builder = TemplateContextBuilder(app)
+
     from dtool_config_generator import (
         auth_routes,
         config_routes,
@@ -119,6 +123,11 @@ def create_app(test_config=None, test_config_file=None):
     api.register_blueprint(config_routes.bp)
     api.register_blueprint(generate_routes.bp)
     api.register_blueprint(main_routes.bp)
+
+    from dtool_config_generator.utils import s3_access_credentials_as_context
+    if app.config.get("STORAGEGRID_S3_CREDENTIALS_EMBEDDED_IN_CONFIG", False):
+        template_context_builder.register(
+            s3_access_credentials_as_context, name="s3_credentials")
 
     @login_manager.unauthorized_handler
     def unauthorized():

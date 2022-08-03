@@ -29,6 +29,46 @@ class DtoolConfigGeneratorAdminIndexView(AdminIndexView):
         return super().index()
 
 
+class TemplateContextBuilder():
+    """Builds """
+    def __init__(self, app=None):
+        self._func_dict = {}
+
+        if app is not None:
+            self.init_app(app)
+
+    def init_app(self, app):
+        """
+        Configures an application. This registers an `after_request` call, and
+        attaches this `LoginManager` to it as `app.login_manager`.
+        :param app: The :class:`flask.Flask` object to configure.
+        :type app: :class:`flask.Flask`
+        :param add_context_processor: Whether to add a context processor to
+            the app that adds a `current_user` variable to the template.
+            Defaults to ``True``.
+        :type add_context_processor: bool
+        """
+        app.template_context_builder = self
+
+    def register(self, func, name=None):
+        """Register a context builder function.
+
+        Parameters
+        ----------
+        func: a function with some return value
+        name: a unique name for the context attribute, per default name of func
+        """
+        if name is None:
+            name = func.__name__
+        if name in self._func_dict:
+            raise ValueError("'%s' already registered.", name)
+        self._func_dict[name] = func
+
+    def run(self, *args, **kwargs):
+        return {
+            name: func(*args, **kwargs) for name, func in self._func_dict.items()}
+
+
 def confirmation_required(func):
     """
     If you decorate a view with this, it will ensure that the current user has
@@ -169,3 +209,9 @@ def revoke_and_regenerate_s3_access_credentials(user):
     sync_user(user)
     revoke_all_s3_access_keys(user)
     return create_new_s3_access_key(user)
+
+
+def s3_access_credentials_as_context():
+    """Returns new credentials as dict"""
+    access_key, secret_access_key = revoke_and_regenerate_s3_access_credentials(current_user)
+    return {"access_key": access_key, "secret_access_key": secret_access_key}
