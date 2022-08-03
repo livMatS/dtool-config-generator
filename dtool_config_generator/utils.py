@@ -1,6 +1,21 @@
-from flask import current_app, redirect, url_for
+from flask import current_app, flash, redirect, url_for
+from flask_admin import AdminIndexView, expose
 from flask_login import current_user
 from functools import wraps
+
+
+# inspired by https://github.com/flask-admin/flask-admin/blob/master/examples/auth-flask-login/app.py
+# Create customized index view class that handles login & registration
+class DtoolConfigGeneratorAdminIndexView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        if not current_user.is_authenticated:
+            flash('You need to be logged in.')
+            return redirect(url_for('auth.login'))
+        if not current_user.is_admin:
+            flash('You need to be admin.')
+            return redirect(url_for('auth.home'))
+        return super().index()
 
 
 def confirmation_required(func):

@@ -13,6 +13,7 @@ from flask_smorest import Api
 
 from dtool_config_generator.extensions import db, ma, mail
 from dtool_config_generator.security import require_confirmation
+from dtool_config_generator.utils import DtoolConfigGeneratorAdminIndexView
 
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
@@ -94,7 +95,9 @@ def create_app(test_config=None, test_config_file=None):
     ma.init_app(app)
 
     # admin initialized here due to https://github.com/flask-admin/flask-admin/issues/910
-    admin = Admin(app, name=__name__, template_mode='bootstrap3')
+    admin = Admin(app, name=__name__,
+                  index_view=DtoolConfigGeneratorAdminIndexView(),
+                  template_mode='bootstrap3')
 
     from dtool_config_generator.models import User
     admin.add_view(ModelView(User, db.session))
@@ -137,7 +140,7 @@ def create_app(test_config=None, test_config_file=None):
     # login controller.
     @ldap_manager.save_user
     def save_user(dn, username, data, memberships):
-        logger.debug("Entered ldap_manager.save_user for %s", username)
+        logger.debug("Entered ldap_manager.save_user for %s (%s; %s)", username, dn, data)
         uid_number = data.get("uidNumber")
         user_id = int(uid_number[0] if isinstance(uid_number, list) else uid_number)
         user = User.query.filter_by(id=user_id).first()
@@ -162,6 +165,29 @@ def create_app(test_config=None, test_config_file=None):
     @app.before_first_request
     def create_tables():
         db.create_all()
+
+    @app.before_first_request
+    def enable_admin():
+        admin_username = app.config.get("DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME", None)
+        admin_userid = app.config.get("DTOOL_CONFIG_GENERATOR_ADMIN_USER_ID", None)
+
+        if admin_username is None:
+            logger.warning("No default admin username configured.")
+            return
+
+        if admin_userid is None:
+            logger.warning("No default admin user id configured.")
+            return
+
+        admin_user = User.query.filter_by(id=admin_userid).first()
+        if admin_user is None:
+            logger.warning("Default admin user not in database. Create.")
+            admin_user = User(id=admin_userid, username=admin_username)
+
+        logger.debug("Make user %s admin.", admin_user.username)
+        admin_user.is_admin = True
+        db.session.add(admin_user)
+        db.session.commit()
 
     @app.before_request
     def log_request():

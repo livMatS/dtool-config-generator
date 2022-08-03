@@ -15,6 +15,9 @@ class Config():
     USER_CONFIRMATION_EMAIL_SENDER = 'admin@dtool.config.generator'
     USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
 
+    DTOOL_CONFIG_GENERATOR_ADMIN_USER_ID = 1000  # always sets this user as admin if exists
+    DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser' # always sets this user as admin if exists
+
     # storagegrid s3 default options
     STORAGEGRID_HOST = 'localhost'
     STORAGEGRID_ACCOUNT_ID = '123456789'

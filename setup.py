@@ -41,7 +41,8 @@ setup(
         "flask-sqlalchemy",
         "itsdangerous",
         "marshmallow-sqlalchemy",
-        "pyyaml"
+        "pyyaml",
+        "requests"
     ],
     setup_requires=['setuptools_scm'],
     tests_require=[

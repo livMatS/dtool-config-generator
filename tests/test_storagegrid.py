@@ -1,6 +1,5 @@
 import json
 import logging
-import pytest
 
 logger = logging.getLogger(__name__)
 

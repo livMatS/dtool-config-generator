@@ -2,7 +2,6 @@
 import yaml
 
 from flask_login import current_user
-from dtool_config_generator.models import User
 from dtool_config_generator.extensions import db
 from dtool_config_generator.security import confirm
 
@@ -43,6 +42,7 @@ creation_date: '{date}'
 """
 
 DTOOL_README = yaml.safe_load(DTOOL_README_YAML)
+
 
 def test_generate_config_success(client):
     with client:

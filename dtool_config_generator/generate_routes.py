@@ -1,7 +1,7 @@
 """Routes for generating dtool config and readme template files."""
 import os.path
 
-from flask import render_template, redirect, url_for, current_app
+from flask import current_app
 from flask_login import login_required, current_user
 from flask_smorest import Blueprint
 

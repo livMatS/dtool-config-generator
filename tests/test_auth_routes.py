@@ -1,11 +1,4 @@
-"""Test web app basic responses."""
-
-import json
-
-
-def test_config_route(client):
-    response = client.get("/config/info")
-    assert json.dumps(response.json, indent=4)
+""" Test auth routes"""
 
 
 def test_login_route_available(client):
