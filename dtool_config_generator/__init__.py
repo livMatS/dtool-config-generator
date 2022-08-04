@@ -35,7 +35,7 @@ from flask_migrate import Migrate
 from flask_smorest import Api
 
 from dtool_config_generator.extensions import db, ma, mail
-from dtool_config_generator.security import require_confirmation
+from dtool_config_generator.security import require_confirmation, confirm
 from dtool_config_generator.utils import (
     TemplateContextBuilder,
     DtoolConfigGeneratorAdminIndexView)
@@ -215,6 +215,9 @@ def create_app(test_config=None, test_config_file=None):
         if admin_user is None:
             logger.warning("Default admin user not in database. Create.")
             admin_user = User(id=admin_userid, username=admin_username)
+
+        logger.debug("Confirm user %s.", admin_user.username)
+        confirm(admin_user)
 
         logger.debug("Make user %s admin.", admin_user.username)
         admin_user.is_admin = True

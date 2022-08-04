@@ -23,13 +23,13 @@
 #
 import json
 
-from flask import current_app, jsonify
+from flask import current_app, flash, jsonify, redirect, url_for
 from flask_login import login_required
 from flask_smorest import Blueprint
 
 import dtool_config_generator
 
-from .utils import admin_required
+from dtool_config_generator.utils import admin_required, send_test_mail
 
 bp = Blueprint("config", __name__, url_prefix="/config")
 
@@ -65,3 +65,13 @@ def server_config():
     # return Config.to_dict()
 
     return jsonify(to_dict(current_app.config))
+
+
+@bp.route("/testmail", methods=["GET"])
+@login_required
+@admin_required
+def test_mail():
+    """Send test mail."""
+    send_test_mail()
+    flash("Sent test mail.")
+    return redirect(url_for('auth.home'))
