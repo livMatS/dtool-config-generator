@@ -64,6 +64,7 @@ setup(
         "flask-sqlalchemy",
         "itsdangerous",
         "marshmallow-sqlalchemy",
+        "psycopg2",  # for postgresql support
         "pyyaml",
         "requests"
     ],
