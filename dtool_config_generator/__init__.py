@@ -43,7 +43,6 @@ from dtool_config_generator.utils import (
 # settings from
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # workaround for diverging python versions:
