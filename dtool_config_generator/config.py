@@ -42,6 +42,13 @@ class Config():
     DTOOL_CONFIG_GENERATOR_ADMIN_USER_ID = 1000  # always sets this user as admin if exists
     DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser' # always sets this user as admin if exists
 
+    # dtool-lookup-server default options
+    DTOOL_LOOKUP_SERVER_URL = 'http://localhost:5000'
+    DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL = 'http://localhost:5001/token'
+    DTOOL_LOOKUP_SERVER_USERNAME = 'testuser'
+    DTOOL_LOOKUP_SERVER_PASSWORD = 'test_password'
+    DTOOL_LOOKUP_SERVER_VERIFY_SSL = False
+
     # storagegrid s3 default options
     STORAGEGRID_HOST = 'localhost'
     STORAGEGRID_ACCOUNT_ID = '123456789'

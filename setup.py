@@ -47,6 +47,7 @@ setup(
         'flask.commands': [
             'user=dtool_config_generator.cli:user_cli',
             'sg=dtool_config_generator.cli:sg_cli',
+            'dls=dtool_config_generator.cli:dls_cli',
         ],
     },
     use_scm_version={
@@ -57,6 +58,7 @@ setup(
             "dtool_config_generator", "version.py"),
     },
     install_requires=[
+        "dtool_lookup_api",
         "flask",
         "flask-admin",
         "flask-cors",
