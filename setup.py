@@ -43,6 +43,12 @@ setup(
     author="Johannes L. Hörmann",
     author_email="johannes.hoermann@imtek.uni-freiburg.de",
     url=url,
+    entry_points={
+        'flask.commands': [
+            'user=dtool_config_generator.cli:user_cli',
+            'sg=dtool_config_generator.cli:sg_cli',
+        ],
+    },
     use_scm_version={
         "local_scheme": local_scheme,
         "root": '.',

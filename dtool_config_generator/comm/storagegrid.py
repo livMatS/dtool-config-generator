@@ -303,7 +303,7 @@ def list_s3_access_keys(user_id):
 
     Returns
     -------
-    list of dict
+    list of dict or None
     """
 
     host = current_app.config.get("STORAGEGRID_HOST")

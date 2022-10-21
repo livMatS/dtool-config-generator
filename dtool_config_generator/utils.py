@@ -207,7 +207,7 @@ def create_new_s3_access_key(user):
 
     Returns
     -------
-    access_key, secret_key tuple
+    access_key, secret_key tuple or None, None on failure
     """
     seconds = int(current_app.config.get(
         'STORAGEGRID_DEFAULT_S3_ACCESS_KEY_VALIDITY_PERIOD',
