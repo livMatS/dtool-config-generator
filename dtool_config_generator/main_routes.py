@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from flask import render_template, abort
+from flask import render_template
 
 from flask_smorest import Blueprint
 
@@ -33,4 +33,3 @@ bp = Blueprint("main", __name__, template_folder='templates')
 def index():
     """Show index page."""
     return render_template('index.html')
-

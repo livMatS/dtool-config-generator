@@ -60,7 +60,7 @@ setup(
     install_requires=[
         "asgiref",
         "dtool_lookup_api",
-        "flask<2.2.0", # https://github.com/marshmallow-code/flask-smorest/issues/384
+        "flask<2.2.0",  # https://github.com/marshmallow-code/flask-smorest/issues/384
         "flask-admin",
         "flask-cors",
         "flask-jwt-extended[asymmetric_crypto]>=4.0",

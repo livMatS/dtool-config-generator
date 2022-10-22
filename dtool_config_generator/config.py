@@ -40,7 +40,7 @@ class Config():
     USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
 
     DTOOL_CONFIG_GENERATOR_ADMIN_USER_ID = 1000  # always sets this user as admin if exists
-    DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser' # always sets this user as admin if exists
+    DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser'  # always sets this user as admin if exists
 
     # dtool-lookup-server default options
     DTOOL_LOOKUP_SERVER_URL = 'http://localhost:5000'
@@ -80,7 +80,7 @@ class Config():
     MAIL_PASSWORD = 'password'
     MAIL_DEFAULT_SENDER = 'admin@dtool.config.generator'
     # MAIL_MAX_EMAILS : default None
-    MAIL_SUPPRESS_SEND = False # : default app.testing
+    MAIL_SUPPRESS_SEND = False  # : default app.testing
     # MAIL_ASCII_ATTACHMENTS : default False
 
     # ldap default options

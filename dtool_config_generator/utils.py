@@ -22,7 +22,6 @@
 # SOFTWARE.
 #
 import datetime
-import json
 import logging
 
 from flask import current_app, flash, redirect, url_for
@@ -100,7 +99,7 @@ class TemplateContextBuilder():
 
 def send_test_mail():
     """Send test mail"""
-    subject = f"Test mail."
+    subject = "Test mail."
 
     user_confirmation_email_sender = current_app.config["USER_CONFIRMATION_EMAIL_SENDER"]
     user_confirmation_email_recipient = current_app.config["USER_CONFIRMATION_EMAIL_RECIPIENT"]

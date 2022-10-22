@@ -37,7 +37,7 @@ bp = Blueprint("config", __name__, url_prefix="/config")
 def serializable(obj):
     try:
         json.dumps(obj)
-    except:
+    except TypeError:
         return str(obj)
     else:
         return obj

@@ -1,8 +1,5 @@
-
-import json
 import logging
-import requests
-import datetime
+import yaml
 from dtool_lookup_api.core.LookupClient import TokenBasedLookupClient, CredentialsBasedLookupClient
 
 from asgiref.sync import async_to_sync
@@ -117,8 +114,8 @@ async def grant_permissions(base_uri, username, allow_register=False):
         if allow_register and username not in base_uri_info['users_with_register_permissions']:
             base_uri_info['users_with_register_permissions'].append(username)
         return await lookup_client.update_permissions(base_uri,
-                                                     base_uri_info['users_with_search_permissions'],
-                                                     base_uri_info['users_with_register_permissions'])
+                                                      base_uri_info['users_with_search_permissions'],
+                                                      base_uri_info['users_with_register_permissions'])
 
 
 @async_to_sync
@@ -131,8 +128,8 @@ async def revoke_permissions(base_uri, username, revoke_register=False):
         if revoke_register and username in base_uri_info['users_with_register_permissions']:
             base_uri_info['users_with_register_permissions'].remove(username)
         return await lookup_client.update_permissions(base_uri,
-                                                     base_uri_info['users_with_search_permissions'],
-                                                     base_uri_info['users_with_register_permissions'])
+                                                      base_uri_info['users_with_search_permissions'],
+                                                      base_uri_info['users_with_register_permissions'])
 
 
 @async_to_sync

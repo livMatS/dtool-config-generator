@@ -46,7 +46,7 @@ def test_storagegrid_get_user_by_short_name(production_app):
         assert ret is not None
 
 
-def test_storagegrid_get_user_by_short_name(production_app):
+def test_storagegrid_get_user_by_short_name_and_id(production_app):
     with production_app.app_context():
         ret_by_short_name = get_user_by_short_name('test-user')
         logger.debug("User: %s", json.dumps(ret_by_short_name, indent=4))

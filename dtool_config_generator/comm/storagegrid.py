@@ -290,7 +290,7 @@ def delete_user(id):
     logger.debug("Delete user via %s", url)
 
     response = requests.delete(url, headers=headers())
-    return  response.status_code == 204
+    return response.status_code == 204
 
 
 def list_s3_access_keys(user_id):

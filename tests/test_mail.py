@@ -16,4 +16,3 @@ def test_smtp():
 def test_send_mail(production_app):
     with production_app.app_context():
         send_test_mail()
-

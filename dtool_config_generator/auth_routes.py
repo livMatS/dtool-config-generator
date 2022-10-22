@@ -23,7 +23,7 @@
 #
 import logging
 
-from flask import abort, current_app, render_template, redirect, request, url_for
+from flask import current_app, render_template, redirect, request, url_for
 from flask_ldap3_login.forms import LDAPLoginForm
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_smorest import Blueprint

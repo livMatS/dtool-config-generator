@@ -1,8 +1,6 @@
 """Test ldap service"""
-import pytest
-import time
-
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
+
 
 def test_ldap(ldap_service):
     ldap_manager = LDAP3LoginManager()

@@ -1,4 +1,4 @@
-from flask_login import current_user, login_user
+from flask_login import current_user
 from dtool_config_generator.extensions import db
 from dtool_config_generator.security import confirm
 
@@ -30,7 +30,7 @@ def test_admin_route_failure(client):
         })
         assert response.status_code == 302
         confirm(current_user)
-        current_user.is_admin = False # invalidate admin rights
+        current_user.is_admin = False  # invalidate admin rights
 
         db.session.commit()
 

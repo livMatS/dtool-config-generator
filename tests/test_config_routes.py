@@ -49,6 +49,3 @@ def test_config_route_failure(client):
         response = client.get("/config/info")
         assert response.status_code == 302
         assert response.json is None
-
-
-
