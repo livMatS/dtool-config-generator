@@ -21,6 +21,7 @@ data/*
 .pytest_cache/*
 .tox/*
 dist/*
+secret/*
 venv/*
 old-provision/*
 jwt-spike/*
