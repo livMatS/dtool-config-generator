@@ -49,6 +49,12 @@ class Config():
     DTOOL_LOOKUP_SERVER_PASSWORD = 'test_password'
     DTOOL_LOOKUP_SERVER_VERIFY_SSL = False
 
+    # activating these will create a user and grant default permissions on the
+    # lookup server side whenever the admin confirms a user
+    DTOOL_LOOKUP_SERVER_REGISTER_USER_ON_CONFIRMATION = False
+    DTOOL_LOOKUP_GRANT_DEFAULT_SEARCH_PERMISSIONS_ON_CONFIRMATION = False
+    DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS = ['s3://test-bucket', 'smb://test-share']
+
     # storagegrid s3 default options
     STORAGEGRID_HOST = 'localhost'
     STORAGEGRID_ACCOUNT_ID = '123456789'

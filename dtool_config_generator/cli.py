@@ -4,7 +4,6 @@ import pprint
 import sys
 
 import click
-from asgiref.sync import async_to_sync
 from flask import Flask
 from flask.cli import AppGroup
 
@@ -14,10 +13,20 @@ from dtool_config_generator.utils import (
     list_s3_access_keys,
     revoke_all_s3_access_keys,
     create_new_s3_access_key,
-    revoke_and_regenerate_s3_access_credentials
+    revoke_and_regenerate_s3_access_credentials,
+    sync_all_users_to_dtool_lookup_server
 )
 
-from dtool_config_generator.comm.dtool_lookup_server import CredentialsBasedLookupClientWithPersistentToken as LookupClient
+from dtool_config_generator.comm.dtool_lookup_server import (
+    list_base_uris,
+    list_users,
+    register_base_uri,
+    register_user,
+    permission_info,
+    grant_permissions,
+    revoke_permissions,
+    user_info)
+
 
 from functools import wraps
 
@@ -128,75 +137,56 @@ def dls_base_uri():
     pass
 
 
-@dls_base_uri.command(name="list", help="""List base URIs registered at lookup server.""")
-@async_to_sync
-async def cli_dls_base_uri_list():
-    async with LookupClient() as lookup_client:
-        base_uris = await lookup_client.list_base_uris()
+@dls_base_uri.command(name="list")
+def cli_dls_base_uri_list():
+    """List base URIs registered at lookup server."""
+    base_uris = list_base_uris()
     if base_uris is None:
         click.secho("Failed retrieving base URIs", fg="red", err=True)
         sys.exit(1)
     pprint.pprint(base_uris)
 
 
-@dls_base_uri.command(name="register", help="""Register base URI at lookup server.""")
+@dls_base_uri.command(name="register")
 @click.argument("base_uri")
-@async_to_sync
-async def cli_dls_base_uri_register(base_uri):
-    async with LookupClient() as lookup_client:
-        ret = await lookup_client.register_base_uri(base_uri)
+def cli_dls_base_uri_register(base_uri):
+    """Register base URI at lookup server."""
+    ret = register_base_uri(base_uri)
     if ret is None or not ret:
         click.secho("Failed registering base URI {}".format(base_uri), fg="red", err=True)
         sys.exit(1)
 
 
-@dls_base_uri.command(name="info", help="""Show permissions info on base URI at lookup server.""")
+@dls_base_uri.command(name="info")
 @click.argument("base_uri")
-@async_to_sync
-async def cli_dls_base_uri_info(base_uri):
-    async with LookupClient() as lookup_client:
-        base_uri_info = await lookup_client.permission_info(base_uri)
+def cli_dls_base_uri_info(base_uri):
+    """Show permissions info on base URI at lookup server."""
+    base_uri_info = permission_info(base_uri)
     if base_uri_info is None:
         click.secho("Failed retrieving info on base URI {}".format(base_uri), fg="red", err=True)
         sys.exit(1)
     pprint.pprint(base_uri_info)
 
 
-@dls_base_uri.command(name="allow", help="""Grant search or register permission on a base URI to user.""")
+@dls_base_uri.command(name="allow")
 @click.argument("base_uri")
 @click.argument("username")
 @click.option("--register", 'allow_register', is_flag=True, help="Allow registration of datasets as well.")
-@async_to_sync
-async def cli_dls_base_uri_allow(base_uri, username, allow_register=False):
-    async with LookupClient() as lookup_client:
-        base_uri_info = await lookup_client.permission_info(base_uri)
-        if username not in base_uri_info['users_with_search_permissions']:
-            base_uri_info['users_with_search_permissions'].append(username)
-        if allow_register and username not in base_uri_info['users_with_register_permissions']:
-            base_uri_info['users_with_register_permissions'].append(username)
-        ret = await lookup_client.update_permissions(base_uri,
-                                                     base_uri_info['users_with_search_permissions'],
-                                                     base_uri_info['users_with_register_permissions'])
+def cli_dls_base_uri_allow(base_uri, username, allow_register=False):
+    """Grant search or register permission on a base URI to user."""
+    ret = grant_permissions(base_uri, username, allow_register)
     if ret is None or not ret:
         click.secho("Failed updating permissions on base URI {}".format(base_uri), fg="red", err=True)
         sys.exit(1)
 
 
-@dls_base_uri.command(name="revoke", help="""Revoke search or register permissions on a base URI for user.""")
+@dls_base_uri.command(name="revoke")
 @click.argument("base_uri")
 @click.argument("username")
 @click.option("--register", 'revoke_register', is_flag=True, help="Revoke registration permission as well.")
-@async_to_sync
-async def cli_dls_base_uri_revoke(base_uri, username, revoke_register=False):
-    async with LookupClient() as lookup_client:
-        base_uri_info = await lookup_client.permission_info(base_uri)
-        if username in base_uri_info['users_with_search_permissions']:
-            base_uri_info['users_with_search_permissions'].remove(username)
-        if revoke_register and username in base_uri_info['users_with_register_permissions']:
-            base_uri_info['users_with_register_permissions'].remove(username)
-        ret = await lookup_client.update_permissions(base_uri,
-                                                     base_uri_info['users_with_search_permissions'],
-                                                     base_uri_info['users_with_register_permissions'])
+def cli_dls_base_uri_revoke(base_uri, username, revoke_register=False):
+    """Revoke search or register permissions on a base URI for user."""
+    ret = revoke_permissions(base_uri, username, revoke_register)
     if ret is None or not ret:
         click.secho("Failed updating permissions on base URI {}".format(base_uri), fg="red", err=True)
         sys.exit(1)
@@ -207,36 +197,41 @@ def dls_user():
     pass
 
 
-@dls_user.command(name="list", help="""List users registered at lookup server.""")
-@async_to_sync
-async def cli_dls_user_list():
-    async with LookupClient() as lookup_client:
-        users = await lookup_client.list_users()
+@dls_user.command(name="list")
+def cli_dls_user_list():
+    """List users registered at lookup server."""
+    users = list_users()
     if users is None:
         click.secho("Failed retrieving users", fg="red", err=True)
         sys.exit(1)
     pprint.pprint(users)
 
 
-@dls_user.command(name="info", help="""Show info on user registered at lookup server.""")
+@dls_user.command(name="info")
 @click.argument("username")
-@async_to_sync
-async def cli_dls_user_info(username):
-    async with LookupClient() as lookup_client:
-        user_info = await lookup_client.user_info(username)
-    if user_info is None:
+def cli_dls_user_info(username):
+    """Show info on user registered at lookup server."""
+    user_info_dict = user_info(username)
+    if user_info_dict is None:
         click.secho("Failed retrieving users", fg="red", err=True)
         sys.exit(1)
-    pprint.pprint(user_info)
+    pprint.pprint(user_info_dict)
 
 
-@dls_user.command(name="register", help="""Register user at lookup server.""")
+@dls_user.command(name="register")
 @click.argument("username")
 @click.option('-a', '--admin', 'is_admin', is_flag=True, help="Register user as admin.")
-@async_to_sync
-async def cli_dls_user_register(username, is_admin=False):
-    async with LookupClient() as lookup_client:
-        ret = await lookup_client.register_user(username, is_admin)
+def cli_dls_user_register(username, is_admin=False):
+    """Register user at lookup server."""
+    ret = register_user(username, is_admin)
     if ret is None or not ret:
         click.secho("Failed registering user {}".format(username), fg="red", err=True)
         sys.exit(1)
+
+
+@dls_user.command(name="sync")
+@click.option('-g', '--grant', 'grant_default_search_permissions',
+              is_flag=True, help="Grant default search permissions.")
+def cli_dls_user_sync(grant_default_search_permissions=False):
+    """Create all users in db at lookup server and grant default search permissions if desired."""
+    sync_all_users_to_dtool_lookup_server(grant_default_search_permissions)
