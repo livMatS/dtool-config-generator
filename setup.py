@@ -58,7 +58,7 @@ setup(
             "dtool_config_generator", "version.py"),
     },
     install_requires=[
-        "asigref",
+        "asgiref",
         "dtool_lookup_api",
         "flask",
         "flask-admin",
