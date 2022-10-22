@@ -1,6 +1,4 @@
 from dtool_config_generator.utils import (
-    sync_user,
-    create_new_s3_access_key,
     revoke_all_s3_access_keys,
     list_s3_access_keys,
     revoke_and_regenerate_s3_access_credentials

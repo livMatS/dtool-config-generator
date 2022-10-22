@@ -6,7 +6,7 @@ import pytest
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 
 from dtool_config_generator.config import Config
-from dtool_config_generator import create_app
+from dtool_config_generator import create_app, db
 
 
 class TestingConfig(Config):
@@ -113,4 +113,6 @@ def production_client(production_app):
 
 @pytest.fixture()
 def production_runner(production_app):
-    return production_app.test_cli_runner()
+    with production_app.app_context():
+        db.create_all()
+        return production_app.test_cli_runner()

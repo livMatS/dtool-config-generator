@@ -1,5 +1,6 @@
 import json
 import logging
+import pytest
 
 from dtool_config_generator.comm.storagegrid import (
     authorize,
@@ -23,7 +24,7 @@ def test_storagegrid_authorize(production_app):
         assert ret is not None
 
 
-# @pytest.mark.skip(reason="User persists after creation.")
+@pytest.mark.xfail(reason="User persists after creation.")
 def test_storagegrid_create_user(production_app):
     with production_app.app_context():
         ret = create_user('user/test-user', 'Test User')
