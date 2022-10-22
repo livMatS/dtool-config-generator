@@ -28,7 +28,10 @@ import logging
 from flask import current_app, flash, redirect, url_for
 from flask_admin import AdminIndexView, expose
 from flask_login import current_user
+from flask_mail import Message
 from functools import wraps
+
+from dtool_config_generator.extensions import mail
 
 import dtool_config_generator.comm.storagegrid as sg
 import dtool_config_generator.comm.dtool_lookup_server as dls
@@ -93,6 +96,22 @@ class TemplateContextBuilder():
     def run(self, *args, **kwargs):
         return {
             name: func(*args, **kwargs) for name, func in self._func_dict.items()}
+
+
+def send_test_mail():
+    """Send test mail"""
+    subject = f"Test mail."
+
+    user_confirmation_email_sender = current_app.config["USER_CONFIRMATION_EMAIL_SENDER"]
+    user_confirmation_email_recipient = current_app.config["USER_CONFIRMATION_EMAIL_RECIPIENT"]
+
+    msg = Message(body='Hello!',
+                  subject=subject,
+                  sender=user_confirmation_email_sender,
+                  recipients=[user_confirmation_email_recipient])
+
+    logger.debug("Send test mail to %s", user_confirmation_email_recipient)
+    mail.send(msg)
 
 
 def confirmation_required(func):
@@ -283,4 +302,3 @@ def sync_all_users_to_dtool_lookup_server(grant_default_search_permissions=None,
             logger.debug("Grant user '{}' search perissions on {}.".format(username, base_uris))
             for base_uri in base_uris:
                 dls.grant_permissions(base_uri, username)
-
