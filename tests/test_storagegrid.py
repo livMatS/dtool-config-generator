@@ -4,6 +4,8 @@ import pytest
 
 from dtool_config_generator.comm.storagegrid import (
     authorize,
+    check_token,
+    check_health,
     create_user,
     create_s3_access_key,
     delete_s3_access_key,
@@ -22,6 +24,18 @@ def test_storagegrid_authorize(production_app):
         ret = authorize()
         logger.debug("Token: %s", ret)
         assert ret is not None
+
+
+def test_storagegrid_check_token(production_app):
+    with production_app.app_context():
+        ret = check_token()
+        assert ret
+
+
+def test_storagegrid_check_health(production_app):
+    with production_app.app_context():
+        ret = check_health()
+        assert ret
 
 
 @pytest.mark.xfail(reason="User persists after creation.")
