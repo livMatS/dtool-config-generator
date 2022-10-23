@@ -1,5 +1,9 @@
 """Test ldap service"""
+import pytest
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
+
+
+pytestmark = pytest.mark.dockertest
 
 
 def test_ldap(ldap_service):
