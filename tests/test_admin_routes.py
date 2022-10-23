@@ -1,6 +1,11 @@
+import pytest
+
 from flask_login import current_user
 from dtool_config_generator.extensions import db
 from dtool_config_generator.security import confirm
+
+
+pytestmark = pytest.mark.dockertest
 
 
 def test_admin_route_success(client):

@@ -1,9 +1,13 @@
 """Test configuration generation routes"""
+import pytest
 import yaml
 
 from flask_login import current_user
 from dtool_config_generator.extensions import db
 from dtool_config_generator.security import confirm
+
+
+pytestmark = pytest.mark.dockertest
 
 
 DTOOL_CONFIG = {

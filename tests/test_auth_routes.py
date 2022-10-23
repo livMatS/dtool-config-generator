@@ -1,4 +1,8 @@
 """ Test auth routes"""
+import pytest
+
+
+pytestmark = pytest.mark.dockertest
 
 
 def test_login_route_available(client):
