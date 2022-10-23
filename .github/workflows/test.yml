@@ -28,7 +28,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest --log-cli-level=DEBUG -m "not integrationtest an not dockertest"
+        pytest --log-cli-level=DEBUG -m "not integrationtest and not dockertest"
 
     - name: Lint with flake8
       run: |
