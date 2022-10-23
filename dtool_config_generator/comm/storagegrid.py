@@ -73,13 +73,19 @@ def authorize():
         return None
 
 
-def check_token():
+def check_token(token):
     """Check validity of token for NetApp STorageGRID endpoint.
+
+    Parameters
+    ----------
+    token: string, default None
+        if None, use cached global token
 
     Returns
     -------
     bool
     """
+
 
     host = current_app.config.get("STORAGEGRID_HOST")
 
@@ -88,7 +94,12 @@ def check_token():
 
     logger.debug("Check token via %s", url)
 
-    response = requests.get(url, headers=headers())
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    response = requests.get(url, headers=headers)
     # sample response:
     # {
     #     'responseTime': '2022-10-23T19:14:21.636Z',
@@ -125,7 +136,8 @@ def check_token():
 
 def headers():
     global token
-    if token is None:
+    # get new token if no token cached or token not valid anymore
+    if token is None or not check_token(token):
         token = authorize()
     headers = {
         "Accept": "application/json",
