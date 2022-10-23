@@ -97,7 +97,7 @@ def test_storagegrid_delete_s3_access_key(production_app):
         for s3_access_key in s3_acces_keys:
             assert delete_s3_access_key(user['id'], s3_access_key['id'])
 
-
+@pytest.mark.skip(reason="Keep test-user for other tests.")
 def test_storagegrid_delete_user(production_app):
     with production_app.app_context():
         user = get_user_by_short_name('test-user')
