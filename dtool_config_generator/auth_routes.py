@@ -23,12 +23,13 @@
 #
 import logging
 
-from flask import abort, current_app, render_template, redirect, request, url_for
+from flask import current_app, render_template, redirect, request, url_for
 from flask_ldap3_login.forms import LDAPLoginForm
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_smorest import Blueprint
 from itsdangerous import URLSafeTimedSerializer
 
+from .comm.dtool_lookup_server import register_user, grant_permissions
 from .extensions import db
 from .forms import ProfileForm
 from .models import User
@@ -90,6 +91,24 @@ def confirm(token):
     user = User.query.filter_by(id=user_id).first_or_404()
     logger.debug("User %s confirmed.", user.username)
     confirm_user(user)
+
+    if getattr(current_app.config, "DTOOL_LOOKUP_SERVER_REGISTER_USER_ON_CONFIRMATION", False):
+        logger.debug("Register user %s at lookup server.", user.username)
+        ret = register_user(user.username)
+        if not ret:
+            logger.warning("Registration of user '%s' at lookup server failed.", user.username)
+
+    if getattr(current_app.config, "DTOOL_LOOKUP_GRANT_DEFAULT_SEARCH_PERMISSIONS_ON_CONFIRMATION", False):
+        base_uris = getattr(current_app.config, "DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS", [])
+        if isinstance(base_uris, str):
+            base_uris = [base_uris]
+
+        logger.debug("Grant user '{}' search perissions on {}.".format(user.username, base_uris))
+        for base_uri in base_uris:
+            ret = grant_permissions(base_uri, user.username)
+            if not ret:
+                logger.warning("Granting search permissions on '%s' to user '%s' at lookup server failed.",
+                               base_uri, user.username)
 
     return redirect(url_for('auth.home'))
 

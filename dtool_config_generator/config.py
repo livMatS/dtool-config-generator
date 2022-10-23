@@ -40,7 +40,20 @@ class Config():
     USER_CONFIRMATION_EMAIL_RECIPIENT = 'admin@dtool.config.generator'
 
     DTOOL_CONFIG_GENERATOR_ADMIN_USER_ID = 1000  # always sets this user as admin if exists
-    DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser' # always sets this user as admin if exists
+    DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser'  # always sets this user as admin if exists
+
+    # dtool-lookup-server default options
+    DTOOL_LOOKUP_SERVER_URL = 'http://localhost:5000'
+    DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL = 'http://localhost:5001/token'
+    DTOOL_LOOKUP_SERVER_USERNAME = 'testuser'
+    DTOOL_LOOKUP_SERVER_PASSWORD = 'test_password'
+    DTOOL_LOOKUP_SERVER_VERIFY_SSL = False
+
+    # activating these will create a user and grant default permissions on the
+    # lookup server side whenever the admin confirms a user
+    DTOOL_LOOKUP_SERVER_REGISTER_USER_ON_CONFIRMATION = False
+    DTOOL_LOOKUP_GRANT_DEFAULT_SEARCH_PERMISSIONS_ON_CONFIRMATION = False
+    DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS = ['s3://test-bucket', 'smb://test-share']
 
     # storagegrid s3 default options
     STORAGEGRID_HOST = 'localhost'
@@ -67,7 +80,7 @@ class Config():
     MAIL_PASSWORD = 'password'
     MAIL_DEFAULT_SENDER = 'admin@dtool.config.generator'
     # MAIL_MAX_EMAILS : default None
-    MAIL_SUPPRESS_SEND = False # : default app.testing
+    MAIL_SUPPRESS_SEND = False  # : default app.testing
     # MAIL_ASCII_ATTACHMENTS : default False
 
     # ldap default options

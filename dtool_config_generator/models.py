@@ -88,3 +88,8 @@ class User(UserMixin, db.Model):
     @property
     def is_confirmed(self):
         return self.confirmed
+
+    def __repr__(self):
+        return "<User {}, id={}, dn={}, activated={}, confirmed={}, is_admin={}, name={}, email={}, orcid={}>".format(
+            self.username, self.id, self.dn, self.activated, self.confirmed, self.is_admin, self.name, self.email,
+            self.orcid)

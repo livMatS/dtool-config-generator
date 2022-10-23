@@ -73,9 +73,71 @@ def authorize():
         return None
 
 
+def check_token(token):
+    """Check validity of token for NetApp STorageGRID endpoint.
+
+    Parameters
+    ----------
+    token: string, default None
+        if None, use cached global token
+
+    Returns
+    -------
+    bool
+    """
+
+
+    host = current_app.config.get("STORAGEGRID_HOST")
+
+    # use access-restricted config route to check health
+    url = f'https://{host}/api/v3/org/config'
+
+    logger.debug("Check token via %s", url)
+
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    response = requests.get(url, headers=headers)
+    # sample response:
+    # {
+    #     'responseTime': '2022-10-23T19:14:21.636Z',
+    #     'status': 'success',
+    #     'apiVersion': '3.4',
+    #     'data': {
+    #         'auto-logout': 9000,
+    #         'user': {
+    #             'id': 'ec520845-ee41-4158-8bc3-79dbf1473246',
+    #             'username': 'test-user',
+    #             'uniqueName': 'user/test-user',
+    #             'firstName': 'Test',
+    #             'fullName': 'Test USer',
+    #             'federated': False},
+    #             'token': {'expires': '2022-10-24T11:14:21.000Z'},
+    #             'permissions': {'rootAccess': True},
+    #             'deactivatedFeatures': {},
+    #             'account': {
+    #                 'id': '80888526281258163394',
+    #                 'name': 'frct-test',
+    #                 'capabilities': ['management', 's3'],
+    #                 'policy': {
+    #                     'useAccountIdentitySource': True,
+    #                     'allowPlatformServices': True,
+    #                     'allowSelectObjectContent': False,
+    #                     'quotaObjectBytes': 10000000000000
+    #                 }
+    #             },
+    #         'restrictedPort': False
+    #     }
+    # }
+    return response.status_code == 200
+
+
 def headers():
     global token
-    if token is None:
+    # get new token if no token cached or token not valid anymore
+    if token is None or not check_token(token):
         token = authorize()
     headers = {
         "Accept": "application/json",
@@ -212,6 +274,28 @@ def get_user_by_id(id):
         return None
 
 
+def check_health():
+    """Check health of NetApp STorageGRID endpoint.
+
+    Returns
+    -------
+    bool
+    """
+
+    host = current_app.config.get("STORAGEGRID_HOST")
+
+    url = f'https://{host}/api/v3/versions'
+
+
+    logger.debug("Check health via %s", url)
+
+    response = requests.get(url)
+    # response_data = response.json()
+    # sample response:
+    # {'responseTime': '2022-10-23T19:02:50.082Z', 'status': 'success', 'apiVersion': '3.4', 'data': [2, 3]}
+    return response.status_code == 200
+
+
 def create_user(unique_name, full_name, member_of=None, disable=False):
     """Create new user.
 
@@ -290,7 +374,7 @@ def delete_user(id):
     logger.debug("Delete user via %s", url)
 
     response = requests.delete(url, headers=headers())
-    return  response.status_code == 204
+    return response.status_code == 204
 
 
 def list_s3_access_keys(user_id):
@@ -303,7 +387,7 @@ def list_s3_access_keys(user_id):
 
     Returns
     -------
-    list of dict
+    list of dict or None
     """
 
     host = current_app.config.get("STORAGEGRID_HOST")

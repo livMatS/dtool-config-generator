@@ -6,7 +6,7 @@ import pytest
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 
 from dtool_config_generator.config import Config
-from dtool_config_generator import create_app
+from dtool_config_generator import create_app, db
 
 
 class TestingConfig(Config):
@@ -19,19 +19,20 @@ class TestingConfig(Config):
 # docker services
 # ===============
 
+
 @pytest.fixture(scope="session")
 def ldap_config():
     config = dict()
-    config["LDAP_HOST"]="ldap://localhost"
-    config["LDAP_PORT"]=1389
-    config["LDAP_USE_SSL"]=False
-    config["LDAP_BASE_DN"]="dc=example,dc=org"
-    config["LDAP_USER_DN"]="ou=users"
-    config["LDAP_USER_RDN_ATTR"]="cn"
-    config["LDAP_USER_LOGIN_ATTR"]="uid"
-    config["LDAP_USER_OBJECT_FILTER"]="(objectclass=*)"
-    config["LDAP_SEARCH_FOR_GROUPS"]=False
-    config["LDAP_USER_SEARCH_SCOPE"]="SUBTREE"
+    config["LDAP_HOST"] = "ldap://localhost"
+    config["LDAP_PORT"] = 1389
+    config["LDAP_USE_SSL"] = False
+    config["LDAP_BASE_DN"] = "dc=example,dc=org"
+    config["LDAP_USER_DN"] = "ou=users"
+    config["LDAP_USER_RDN_ATTR"] = "cn"
+    config["LDAP_USER_LOGIN_ATTR"] = "uid"
+    config["LDAP_USER_OBJECT_FILTER"] = "(objectclass=*)"
+    config["LDAP_SEARCH_FOR_GROUPS"] = False
+    config["LDAP_USER_SEARCH_SCOPE"] = "SUBTREE"
     return config
 
 
@@ -113,4 +114,6 @@ def production_client(production_app):
 
 @pytest.fixture()
 def production_runner(production_app):
-    return production_app.test_cli_runner()
+    with production_app.app_context():
+        db.create_all()
+        return production_app.test_cli_runner()

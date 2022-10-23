@@ -22,7 +22,6 @@
 # SOFTWARE.
 #
 import datetime
-import json
 import logging
 
 from flask import current_app, flash, redirect, url_for
@@ -34,6 +33,9 @@ from functools import wraps
 from dtool_config_generator.extensions import mail
 
 import dtool_config_generator.comm.storagegrid as sg
+import dtool_config_generator.comm.dtool_lookup_server as dls
+
+from dtool_config_generator.models import User
 
 
 DEFAULT_S3_ACCESS_KEY_VALIDITY_PERIOD = 86400
@@ -97,7 +99,7 @@ class TemplateContextBuilder():
 
 def send_test_mail():
     """Send test mail"""
-    subject = f"Test mail."
+    subject = "Test mail."
 
     user_confirmation_email_sender = current_app.config["USER_CONFIRMATION_EMAIL_SENDER"]
     user_confirmation_email_recipient = current_app.config["USER_CONFIRMATION_EMAIL_RECIPIENT"]
@@ -172,6 +174,10 @@ def admin_required(func):
     return decorated_view
 
 
+#############################################################################
+# NetApp StorageGRID endpoint utility functions
+#############################################################################
+
 def sync_user(user):
     """Syncs user entry to StorageGRID server
 
@@ -226,7 +232,7 @@ def create_new_s3_access_key(user):
 
     Returns
     -------
-    access_key, secret_key tuple
+    access_key, secret_key tuple or None, None on failure
     """
     seconds = int(current_app.config.get(
         'STORAGEGRID_DEFAULT_S3_ACCESS_KEY_VALIDITY_PERIOD',
@@ -257,3 +263,41 @@ def s3_access_credentials_as_context():
     """Returns new credentials as dict"""
     access_key, secret_access_key = revoke_and_regenerate_s3_access_credentials(current_user)
     return {"access_key": access_key, "secret_access_key": secret_access_key}
+
+
+#############################################################################
+# dtool-lookup-server endpoint utility functions
+#############################################################################
+
+
+def sync_all_users_to_dtool_lookup_server(grant_default_search_permissions=None,
+                                          default_search_permissions=None):
+    """Create all users in db at lookup server.
+
+    Parameters
+    ----------
+    grant_default_search_permissions: bool, default True
+        Grant grant synced users default search permissions.
+    default_search_permissions: list of str, default None
+        List of base URI to grant synced users search permissions to.
+        Will look up DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS config value.
+    """
+
+    dcg_user_list = [user.username for user in User.query.all()]
+    dls_user_list = [user['username'] for user in dls.list_users()]
+
+    base_uris = current_app.config.get('DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS', [])
+    if isinstance(base_uris, str):
+        base_uris = [base_uris]
+
+    for username in dcg_user_list:
+        logger.debug("Processing user '{}'.".format(username))
+        if username not in dls_user_list:
+            logger.debug("Register user '{}'.".format(username))
+            dls.register_user(username)
+        else:
+            logger.debug("User '{}' already registered.".format(username))
+        if grant_default_search_permissions:
+            logger.debug("Grant user '{}' search perissions on {}.".format(username, base_uris))
+            for base_uri in base_uris:
+                dls.grant_permissions(base_uri, username)

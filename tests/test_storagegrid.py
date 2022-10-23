@@ -1,8 +1,16 @@
 import json
 import logging
+import os
+import pytest
+
+# https://docs.pytest.org/en/7.1.x/how-to/skipping.html#skip-all-test-functions-of-a-class-or-module
+pytestmark = pytest.mark.integrationtest
+
 
 from dtool_config_generator.comm.storagegrid import (
     authorize,
+    check_token,
+    check_health,
     create_user,
     create_s3_access_key,
     delete_s3_access_key,
@@ -23,7 +31,25 @@ def test_storagegrid_authorize(production_app):
         assert ret is not None
 
 
-# @pytest.mark.skip(reason="User persists after creation.")
+def test_storagegrid_check_token(production_app):
+    with production_app.app_context():
+        token = authorize()
+        ret = check_token(token)
+        assert ret
+
+def test_storagegrid_check_token_failure(production_app):
+    with production_app.app_context():
+        token = "invalid"
+        ret = check_token(token)
+        assert not ret
+
+def test_storagegrid_check_health(production_app):
+    with production_app.app_context():
+        ret = check_health()
+        assert ret
+
+
+@pytest.mark.xfail(reason="User persists after creation.")
 def test_storagegrid_create_user(production_app):
     with production_app.app_context():
         ret = create_user('user/test-user', 'Test User')
@@ -45,7 +71,7 @@ def test_storagegrid_get_user_by_short_name(production_app):
         assert ret is not None
 
 
-def test_storagegrid_get_user_by_short_name(production_app):
+def test_storagegrid_get_user_by_short_name_and_id(production_app):
     with production_app.app_context():
         ret_by_short_name = get_user_by_short_name('test-user')
         logger.debug("User: %s", json.dumps(ret_by_short_name, indent=4))
@@ -96,7 +122,7 @@ def test_storagegrid_delete_s3_access_key(production_app):
         for s3_access_key in s3_acces_keys:
             assert delete_s3_access_key(user['id'], s3_access_key['id'])
 
-
+@pytest.mark.skip(reason="Keep test-user for other tests.")
 def test_storagegrid_delete_user(production_app):
     with production_app.app_context():
         user = get_user_by_short_name('test-user')

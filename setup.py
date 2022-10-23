@@ -43,6 +43,13 @@ setup(
     author="Johannes L. Hörmann",
     author_email="johannes.hoermann@imtek.uni-freiburg.de",
     url=url,
+    entry_points={
+        'flask.commands': [
+            'user=dtool_config_generator.cli:user_cli',
+            'sg=dtool_config_generator.cli:sg_cli',
+            'dls=dtool_config_generator.cli:dls_cli',
+        ],
+    },
     use_scm_version={
         "local_scheme": local_scheme,
         "root": '.',
@@ -51,7 +58,9 @@ setup(
             "dtool_config_generator", "version.py"),
     },
     install_requires=[
-        "flask<2.2.0", # https://github.com/marshmallow-code/flask-smorest/issues/384
+        "asgiref",
+        "dtool_lookup_api",
+        "flask<2.2.0",  # https://github.com/marshmallow-code/flask-smorest/issues/384
         "flask-admin",
         "flask-cors",
         "flask-jwt-extended[asymmetric_crypto]>=4.0",

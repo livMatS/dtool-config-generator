@@ -86,8 +86,7 @@ def generate_config():
     return current_app.response_class(
         stream_config_template(user=current_user, **extended_context),
         mimetype='application/json',
-        headers={"Content-Disposition":
-                     "attachment;filename=dtool.json"}
+        headers={"Content-Disposition": "attachment;filename=dtool.json"}
     )
 
 
@@ -118,6 +117,5 @@ def readme():
     return current_app.response_class(
         stream_readme_template(user=current_user),
         mimetype='application/yaml',
-        headers={"Content-Disposition":
-                     "attachment;filename=dtool_readme.yml"}
+        headers={"Content-Disposition": "attachment;filename=dtool_readme.yml"}
     )

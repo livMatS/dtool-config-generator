@@ -1,4 +1,5 @@
 """Test web app basic responses."""
+import pytest
 
 import json
 import logging
@@ -6,6 +7,9 @@ import logging
 from flask_login import current_user
 from dtool_config_generator.security import confirm
 from dtool_config_generator.extensions import db
+
+
+pytestmark = pytest.mark.dockertest
 
 
 logger = logging.getLogger(__name__)
@@ -49,6 +53,3 @@ def test_config_route_failure(client):
         response = client.get("/config/info")
         assert response.status_code == 302
         assert response.json is None
-
-
-
