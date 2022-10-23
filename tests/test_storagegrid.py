@@ -28,9 +28,15 @@ def test_storagegrid_authorize(production_app):
 
 def test_storagegrid_check_token(production_app):
     with production_app.app_context():
-        ret = check_token()
+        token = authorize()
+        ret = check_token(token)
         assert ret
 
+def test_storagegrid_check_token_failure(production_app):
+    with production_app.app_context():
+        token = "invalid"
+        ret = check_token(token)
+        assert not ret
 
 def test_storagegrid_check_health(production_app):
     with production_app.app_context():
