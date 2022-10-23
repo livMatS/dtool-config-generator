@@ -1,6 +1,11 @@
 import json
 import logging
+import os
 import pytest
+
+# https://docs.pytest.org/en/7.1.x/how-to/skipping.html#skip-all-test-functions-of-a-class-or-module
+pytestmark = pytest.mark.integrationtest
+
 
 from dtool_config_generator.comm.storagegrid import (
     authorize,

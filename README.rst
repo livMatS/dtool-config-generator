@@ -94,5 +94,6 @@ Pay attention, these commands print both keys plain text to stdout.
 Testing
 ------------------------------------------------
 
-Many tests only work within a semi-productive environment with access to NetApp StorageGRID and dtool-lookup-server REST API interfaces. Configure such an environment within ``production.cfg`` within the repository root. Run tests with ``pytest``.
+Many tests only work within a semi-productive environment with access to NetApp StorageGRID and dtool-lookup-server REST API interfaces and are marked as ``integrationtest``. Configure such an environment within ``production.cfg`` within the repository root ad run tests with ``pytest``.
+Alternatively, deselect such tests with ``pytest -m "not integrationtest"``.
 Some tests rely on ``docker`` for launching an LDAP server.

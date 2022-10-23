@@ -1,3 +1,5 @@
+import pytest
+
 from dtool_config_generator.utils import (
     revoke_all_s3_access_keys,
     list_s3_access_keys,
@@ -5,6 +7,10 @@ from dtool_config_generator.utils import (
 )
 
 from dtool_config_generator.models import User
+
+
+# https://docs.pytest.org/en/7.1.x/how-to/skipping.html#skip-all-test-functions-of-a-class-or-module
+pytestmark = pytest.mark.integrationtest
 
 
 def test_revoke_and_regenerate_s3_access_credentials(production_app):

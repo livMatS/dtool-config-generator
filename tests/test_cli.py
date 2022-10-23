@@ -5,6 +5,10 @@ import pytest
 from dtool_config_generator.cli import (user_cli, sg_cli, dls_cli)
 
 
+# https://docs.pytest.org/en/7.1.x/how-to/skipping.html#skip-all-test-functions-of-a-class-or-module
+pytestmark = pytest.mark.integrationtest
+
+
 logger = logging.getLogger(__name__)
 
 
