@@ -73,6 +73,56 @@ def authorize():
         return None
 
 
+def check_token():
+    """Check validity of token for NetApp STorageGRID endpoint.
+
+    Returns
+    -------
+    bool
+    """
+
+    host = current_app.config.get("STORAGEGRID_HOST")
+
+    # use access-restricted config route to check health
+    url = f'https://{host}/api/v3/org/config'
+
+    logger.debug("Check token via %s", url)
+
+    response = requests.get(url, headers=headers())
+    # sample response:
+    # {
+    #     'responseTime': '2022-10-23T19:14:21.636Z',
+    #     'status': 'success',
+    #     'apiVersion': '3.4',
+    #     'data': {
+    #         'auto-logout': 9000,
+    #         'user': {
+    #             'id': 'ec520845-ee41-4158-8bc3-79dbf1473246',
+    #             'username': 'test-user',
+    #             'uniqueName': 'user/test-user',
+    #             'firstName': 'Test',
+    #             'fullName': 'Test USer',
+    #             'federated': False},
+    #             'token': {'expires': '2022-10-24T11:14:21.000Z'},
+    #             'permissions': {'rootAccess': True},
+    #             'deactivatedFeatures': {},
+    #             'account': {
+    #                 'id': '80888526281258163394',
+    #                 'name': 'frct-test',
+    #                 'capabilities': ['management', 's3'],
+    #                 'policy': {
+    #                     'useAccountIdentitySource': True,
+    #                     'allowPlatformServices': True,
+    #                     'allowSelectObjectContent': False,
+    #                     'quotaObjectBytes': 10000000000000
+    #                 }
+    #             },
+    #         'restrictedPort': False
+    #     }
+    # }
+    return response.status_code == 200
+
+
 def headers():
     global token
     if token is None:
@@ -210,6 +260,28 @@ def get_user_by_id(id):
         logger.debug(json.dumps(
             response_data, indent=4))
         return None
+
+
+def check_health():
+    """Check health of NetApp STorageGRID endpoint.
+
+    Returns
+    -------
+    bool
+    """
+
+    host = current_app.config.get("STORAGEGRID_HOST")
+
+    url = f'https://{host}/api/v3/versions'
+
+
+    logger.debug("Check health via %s", url)
+
+    response = requests.get(url)
+    # response_data = response.json()
+    # sample response:
+    # {'responseTime': '2022-10-23T19:02:50.082Z', 'status': 'success', 'apiVersion': '3.4', 'data': [2, 3]}
+    return response.status_code == 200
 
 
 def create_user(unique_name, full_name, member_of=None, disable=False):
