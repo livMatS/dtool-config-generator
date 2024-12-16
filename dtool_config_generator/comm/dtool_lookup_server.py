@@ -32,15 +32,15 @@ class CredentialsBasedLookupClientWithPersistentToken(CredentialsBasedLookupClie
                  verify_ssl=None):
 
         if lookup_url is None:
-            lookup_url = current_app.config.get("DTOOL_LOOKUP_SERVER_URL")
+            lookup_url = current_app.config.get("DSERVER_URL")
         if auth_url is None:
-            auth_url = current_app.config.get("DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL")
+            auth_url = current_app.config.get("DSERVER_TOKEN_GENERATOR_URL")
         if username is None:
-            username = current_app.config.get("DTOOL_LOOKUP_SERVER_USERNAME")
+            username = current_app.config.get("DSERVER_USERNAME")
         if password is None:
-            password = current_app.config.get("DTOOL_LOOKUP_SERVER_PASSWORD")
+            password = current_app.config.get("DSERVER_PASSWORD")
         if verify_ssl is None:
-            verify_ssl = current_app.config.get("DTOOL_LOOKUP_SERVER_VERIFY_SSL")
+            verify_ssl = current_app.config.get("DSERVER_VERIFY_SSL")
 
         logger.debug("Initializing %s with lookup_url=%s, auth_url=%s, username=%s, ssl=%s",
                      type(self).__name__, lookup_url, auth_url, username, verify_ssl)
@@ -87,7 +87,7 @@ class CredentialsBasedLookupClientWithPersistentToken(CredentialsBasedLookupClie
 async def list_base_uris():
     """Get list of base URIs registered at lookup server."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        return await lookup_client.list_base_uris()
+        return await lookup_client.get_base_uris()
 
 
 @async_to_sync
@@ -101,49 +101,51 @@ async def register_base_uri(base_uri):
 async def permission_info(base_uri):
     """Get permissions info on base URI from lookup server."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        return await lookup_client.permission_info(base_uri)
+        return await lookup_client.get_base_uri(base_uri)
 
 
 @async_to_sync
 async def grant_permissions(base_uri, username, allow_register=False):
     """Grant search or register permission on a base URI to user."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        base_uri_info = await lookup_client.permission_info(base_uri)
+        base_uri_info = await lookup_client.get_base_uri(base_uri)
         if username not in base_uri_info['users_with_search_permissions']:
             base_uri_info['users_with_search_permissions'].append(username)
         if allow_register and username not in base_uri_info['users_with_register_permissions']:
             base_uri_info['users_with_register_permissions'].append(username)
-        return await lookup_client.update_permissions(base_uri,
-                                                      base_uri_info['users_with_search_permissions'],
-                                                      base_uri_info['users_with_register_permissions'])
+        return await lookup_client.register_base_uri(
+            base_uri,
+            users_with_search_permissions=base_uri_info['users_with_search_permissions'],
+            users_with_register_permissions=base_uri_info['users_with_register_permissions'])
 
 
 @async_to_sync
 async def revoke_permissions(base_uri, username, revoke_register=False):
     """Revoke search or register permissions on a base URI for user."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        base_uri_info = await lookup_client.permission_info(base_uri)
+        base_uri_info = await lookup_client.get_base_uri(base_uri)
         if username in base_uri_info['users_with_search_permissions']:
             base_uri_info['users_with_search_permissions'].remove(username)
         if revoke_register and username in base_uri_info['users_with_register_permissions']:
             base_uri_info['users_with_register_permissions'].remove(username)
-        return await lookup_client.update_permissions(base_uri,
-                                                      base_uri_info['users_with_search_permissions'],
-                                                      base_uri_info['users_with_register_permissions'])
+        return await lookup_client.register_base_uri(
+            base_uri,
+            users_with_search_permissions=base_uri_info['users_with_search_permissions'],
+            users_with_register_permissions=base_uri_info['users_with_register_permissions'])
 
 
 @async_to_sync
 async def list_users():
     """Get list of users registered at lookup server."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        return await lookup_client.list_users()
+        return await lookup_client.get_users()
 
 
 @async_to_sync
 async def user_info(username):
     """Show info on user registered at lookup server."""
     async with CredentialsBasedLookupClientWithPersistentToken() as lookup_client:
-        return await lookup_client.user_info(username)
+        return await lookup_client.get_user(username)
 
 
 @async_to_sync

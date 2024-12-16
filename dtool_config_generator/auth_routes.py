@@ -92,7 +92,7 @@ def confirm(token):
     logger.debug("User %s confirmed.", user.username)
     confirm_user(user)
 
-    if getattr(current_app.config, "DTOOL_LOOKUP_SERVER_REGISTER_USER_ON_CONFIRMATION", False):
+    if getattr(current_app.config, "DSERVER_REGISTER_USER_ON_CONFIRMATION", False):
         logger.debug("Register user %s at lookup server.", user.username)
         ret = register_user(user.username)
         if not ret:

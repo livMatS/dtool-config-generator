@@ -43,15 +43,15 @@ class Config():
     DTOOL_CONFIG_GENERATOR_ADMIN_USER_NAME = 'testuser'  # always sets this user as admin if exists
 
     # dtool-lookup-server default options
-    DTOOL_LOOKUP_SERVER_URL = 'http://localhost:5000'
-    DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL = 'http://localhost:5001/token'
-    DTOOL_LOOKUP_SERVER_USERNAME = 'testuser'
-    DTOOL_LOOKUP_SERVER_PASSWORD = 'test_password'
-    DTOOL_LOOKUP_SERVER_VERIFY_SSL = False
+    DSERVER_URL = 'http://localhost:5000'
+    DSERVER_TOKEN_GENERATOR_URL = 'http://localhost:5001/token'
+    DSERVER_USERNAME = 'testuser'
+    DSERVER_PASSWORD = 'test_password'
+    DSERVER_VERIFY_SSL = False
 
     # activating these will create a user and grant default permissions on the
     # lookup server side whenever the admin confirms a user
-    DTOOL_LOOKUP_SERVER_REGISTER_USER_ON_CONFIRMATION = False
+    DSERVER_REGISTER_USER_ON_CONFIRMATION = False
     DTOOL_LOOKUP_GRANT_DEFAULT_SEARCH_PERMISSIONS_ON_CONFIRMATION = False
     DTOOL_LOOKUP_DEFAULT_SEARCH_PERMISSIONS = ['s3://test-bucket', 'smb://test-share']
 
