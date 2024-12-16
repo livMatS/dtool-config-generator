@@ -11,10 +11,10 @@ pytestmark = pytest.mark.dockertest
 
 
 DTOOL_CONFIG = {
-  "DTOOL_LOOKUP_SERVER_TOKEN_GENERATOR_URL": "https://localhost:5001/token",
-  "DTOOL_LOOKUP_SERVER_URL": "https://localhost:5000/lookup",
-  "DTOOL_LOOKUP_SERVER_USERNAME": "testuser",
-  "DTOOL_LOOKUP_SERVER_VERIFY_SSL": "false",
+  "DSERVER_TOKEN_GENERATOR_URL": "https://localhost:5001/token",
+  "DSERVER_URL": "https://localhost:5000/lookup",
+  "DSERVER_USERNAME": "testuser",
+  "DSERVER_VERIFY_SSL": "false",
   "DTOOL_S3_ACCESS_KEY_ID_test-bucket": "testuser_access_key",
   "DTOOL_S3_DATASET_PREFIX": "u/testuser/",
   "DTOOL_S3_ENDPOINT_test-bucket": "http://localhost:9000",
