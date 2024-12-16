@@ -59,7 +59,7 @@ setup(
     },
     install_requires=[
         "asgiref",
-        "dtool_lookup_api>=0.5.1",
+        "dtool_lookup_api>=0.10.1",
         "flask<2.2.0",  # https://github.com/marshmallow-code/flask-smorest/issues/384
         "flask-admin",
         "flask-cors",
@@ -81,7 +81,7 @@ setup(
     tests_require=[
         "pytest",
         "pytest-cov",
-        "pytest-docker[docker-compose-v1]",
+        "pytest-docker",
         "ldap3"
     ],
     license="MIT"
