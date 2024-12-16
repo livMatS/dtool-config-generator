@@ -59,7 +59,7 @@ StorageGRID API commands
 
 List all access keys for a user on NetApp StorageGRID endpoint with ::
 
-    $ flas sg list testuser
+    $ flask sg list testuser
     [{'accountId': '80888526281258163391',
       'displayName': '****************DT91',
       'expires': '2024-09-28T11:06:30.000Z',
