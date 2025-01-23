@@ -75,7 +75,8 @@ setup(
         "marshmallow-sqlalchemy",
         "psycopg2",  # for postgresql support
         "pyyaml",
-        "requests"
+        "requests",
+        "Werkzeug<=2.2.2",
     ],
     setup_requires=['setuptools_scm'],
     tests_require=[
