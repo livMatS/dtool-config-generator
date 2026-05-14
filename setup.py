@@ -73,7 +73,7 @@ setup(
         "flask-sqlalchemy",
         "itsdangerous",
         "marshmallow-sqlalchemy==0.28.1",
-        "psycopg2",  # for postgresql support
+        "psycopg2-binary",  # patched: psycopg2-binary avoids pg_config build dep  # for postgresql support
         "pyyaml",
         "requests",
         "Werkzeug<=2.2.2",
